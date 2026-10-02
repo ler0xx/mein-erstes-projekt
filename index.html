@@ -22,6 +22,31 @@
     <button class="toggle" id="toggle" type="button" aria-pressed="false">Animation pausieren</button>
   </main>
 
+  <div class="cat" id="cat" aria-hidden="true">
+    <svg class="cat-figure" viewBox="0 0 120 80" width="120" height="80">
+      <path class="cat-tail" d="M28 40 C 12 38, 6 22, 14 8" fill="none" stroke="#e8893a" stroke-width="7" stroke-linecap="round"/>
+      <g stroke-width="7" stroke-linecap="round">
+        <path class="cat-leg cat-leg-a" d="M34 50 L 34 72" stroke="#d27a2c"/>
+        <path class="cat-leg cat-leg-b" d="M76 50 L 76 72" stroke="#d27a2c"/>
+      </g>
+      <g class="cat-body">
+        <ellipse cx="55" cy="44" rx="32" ry="15" fill="#f5a04c" stroke="#d27a2c" stroke-width="2.5"/>
+        <path d="M40 30 C 44 36, 44 42, 42 48 M54 29 C 58 35, 58 42, 56 48 M68 30 C 72 36, 72 42, 70 47" fill="none" stroke="#d27a2c" stroke-width="3" stroke-linecap="round"/>
+        <path d="M80 18 L 83 3 L 92 14 Z M96 13 L 103 2 L 106 18 Z" fill="#f5a04c" stroke="#d27a2c" stroke-width="2.5" stroke-linejoin="round"/>
+        <circle cx="92" cy="28" r="16" fill="#f5a04c" stroke="#d27a2c" stroke-width="2.5"/>
+        <ellipse cx="101" cy="33" rx="8" ry="6" fill="#fff1dc"/>
+        <ellipse class="cat-eye" cx="97" cy="25" rx="3" ry="4" fill="#1b1b24"/>
+        <path d="M105 30 L 109 30 L 107 33 Z" fill="#ff7aa2"/>
+        <path d="M100 34 L 118 31 M100 36 L 118 38" stroke="#8a4a1c" stroke-width="1.2" stroke-linecap="round"/>
+      </g>
+      <g stroke-width="7" stroke-linecap="round">
+        <path class="cat-leg cat-leg-b" d="M42 50 L 42 72" stroke="#f5a04c"/>
+        <path class="cat-leg cat-leg-a" d="M84 50 L 84 72" stroke="#f5a04c"/>
+      </g>
+    </svg>
+  </div>
+
   <script src="main.js"></script>
+  <script src="katze.js"></script>
 </body>
 </html>

@@ -29,6 +29,8 @@ python -m http.server 8000
 | `style.css`  | Layout, Typografie, Farben (hell/dunkel)            |
 | `main.js`    | Canvas-Animation (Strömungsfeld, Maus-Interaktion) |
 | `images/blume.svg` | Blumen-Grafik                                 |
+| `katze.js`   | Katze, die unten über die Seite läuft               |
+| `images/katze.svg` | Katzen-Grafik (Porträt)                       |
 
 ## Blume
 
@@ -37,3 +39,14 @@ Unter Titel und Untertitel zeigt die Seite eine kleine Blume
 `prefers-reduced-motion` steht sie still.
 
 ![Eine Blume](images/blume.svg)
+
+## Katze
+
+Unten auf der Seite streift eine rot getigerte Katze umher (`katze.js`):
+Sie sucht sich einen Platz, läuft mit wippenden Beinen hin, bleibt eine
+Weile stehen und zieht dann weiter. Pausiert man die Animation – oder ist
+`prefers-reduced-motion` aktiv –, bleibt auch die Katze stehen.
+
+Als Porträt gibt es sie zusätzlich als `images/katze.svg`:
+
+![Eine Katze](images/katze.svg)
