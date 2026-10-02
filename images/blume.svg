@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="300" viewBox="0 0 200 300">
+  <title>Eine Blume</title>
+
+  <!-- Himmel -->
+  <rect width="200" height="300" fill="#e8f6ff"/>
+
+  <!-- Wiese -->
+  <ellipse cx="100" cy="300" rx="140" ry="28" fill="#8fd16a"/>
+
+  <!-- Stiel -->
+  <path d="M100 110 C 96 170, 106 220, 100 290" fill="none" stroke="#3f9b3a" stroke-width="7" stroke-linecap="round"/>
+
+  <!-- Blätter -->
+  <path d="M101 215 C 125 190, 160 192, 172 205 C 152 225, 122 230, 101 215 Z" fill="#5cbf4a"/>
+  <path d="M101 215 C 130 207, 150 204, 172 205" fill="none" stroke="#3f9b3a" stroke-width="2"/>
+  <path d="M99 245 C 75 220, 40 222, 28 235 C 48 255, 78 260, 99 245 Z" fill="#5cbf4a"/>
+  <path d="M99 245 C 70 237, 50 234, 28 235" fill="none" stroke="#3f9b3a" stroke-width="2"/>
+
+  <!-- Blütenblätter -->
+  <g transform="translate(100 100)" stroke="#e0507a" stroke-width="2">
+    <ellipse cx="0" cy="-38" rx="18" ry="32" fill="#ff7aa2"/>
+    <ellipse cx="0" cy="-38" rx="18" ry="32" fill="#ff8fb1" transform="rotate(45)"/>
+    <ellipse cx="0" cy="-38" rx="18" ry="32" fill="#ff7aa2" transform="rotate(90)"/>
+    <ellipse cx="0" cy="-38" rx="18" ry="32" fill="#ff8fb1" transform="rotate(135)"/>
+    <ellipse cx="0" cy="-38" rx="18" ry="32" fill="#ff7aa2" transform="rotate(180)"/>
+    <ellipse cx="0" cy="-38" rx="18" ry="32" fill="#ff8fb1" transform="rotate(225)"/>
+    <ellipse cx="0" cy="-38" rx="18" ry="32" fill="#ff7aa2" transform="rotate(270)"/>
+    <ellipse cx="0" cy="-38" rx="18" ry="32" fill="#ff8fb1" transform="rotate(315)"/>
+  </g>
+
+  <!-- Blütenmitte -->
+  <circle cx="100" cy="100" r="22" fill="#ffd23f" stroke="#e8a317" stroke-width="3"/>
+  <g fill="#e8a317">
+    <circle cx="93" cy="94" r="2.5"/>
+    <circle cx="106" cy="93" r="2.5"/>
+    <circle cx="100" cy="102" r="2.5"/>
+    <circle cx="91" cy="107" r="2.5"/>
+    <circle cx="109" cy="106" r="2.5"/>
+  </g>
+</svg>

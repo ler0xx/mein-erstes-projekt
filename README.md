@@ -28,3 +28,12 @@ python -m http.server 8000
 | `index.html` | Seitenstruktur                                      |
 | `style.css`  | Layout, Typografie, Farben (hell/dunkel)            |
 | `main.js`    | Canvas-Animation (Strömungsfeld, Maus-Interaktion) |
+| `images/blume.svg` | Blumen-Grafik                                 |
+
+## Blume
+
+Unter Titel und Untertitel zeigt die Seite eine kleine Blume
+(`images/blume.svg`), die sanft hin- und herschwingt – bei
+`prefers-reduced-motion` steht sie still.
+
+![Eine Blume](images/blume.svg)
