@@ -29,8 +29,8 @@ python -m http.server 8000
 | `style.css`  | Layout, Typografie, Farben (hell/dunkel)            |
 | `main.js`    | Canvas-Animation (Strömungsfeld, Maus-Interaktion) |
 | `images/blume.svg` | Blumen-Grafik                                 |
-| `katze.js`   | Katze, die unten über die Seite läuft               |
-| `images/katze.svg` | Katzen-Grafik (Porträt)                       |
+| `katze.js`   | Balu, die Katze, die über die Seite läuft           |
+| `images/katze.svg` | Porträt von Balu                              |
 
 ## Blume
 
@@ -40,13 +40,13 @@ Unter Titel und Untertitel zeigt die Seite eine kleine Blume
 
 ![Eine Blume](images/blume.svg)
 
-## Katze
+## Balu, die Katze
 
-Unten auf der Seite streift eine rot getigerte Katze umher (`katze.js`):
+Unten auf der Seite streift Balu umher, eine rot getigerte Katze (`katze.js`):
 Sie sucht sich einen Platz, läuft mit wippenden Beinen hin, bleibt eine
 Weile stehen und zieht dann weiter. Pausiert man die Animation – oder ist
-`prefers-reduced-motion` aktiv –, bleibt auch die Katze stehen.
+`prefers-reduced-motion` aktiv –, bleibt auch Balu stehen.
 
-Als Porträt gibt es sie zusätzlich als `images/katze.svg`:
+Als Porträt gibt es Balu zusätzlich als `images/katze.svg`:
 
-![Eine Katze](images/katze.svg)
+![Balu, die Katze](images/katze.svg)

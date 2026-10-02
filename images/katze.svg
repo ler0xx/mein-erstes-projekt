@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="200" height="300" viewBox="0 0 200 300">
-  <title>Eine Katze</title>
+  <title>Balu, die Katze</title>
 
   <style>
     .schwanz { transform-origin: 128px 262px; animation: wedeln 3.2s ease-in-out infinite; }

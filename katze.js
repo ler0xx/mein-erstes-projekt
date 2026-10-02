@@ -1,4 +1,4 @@
-// Eine Katze, die unten über die Seite läuft: Sie sucht sich ein Ziel auf dem
+// Balu, die Katze, läuft unten über die Seite: Sie sucht sich ein Ziel auf dem
 // "Boden", läuft hin, bleibt eine Weile stehen und zieht dann weiter.
 // Sie hält still, wenn die Animation pausiert ist (siehe main.js).
 (() => {
