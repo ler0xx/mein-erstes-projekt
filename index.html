@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>mein-erstes-projekt</title>
+  <meta name="description" content="Ein kleines Projekt mit einem generativen, interaktiven Hintergrund.">
+  <link rel="icon" href="images/blume.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <canvas id="bg" aria-hidden="true"></canvas>
+
+  <main class="hero">
+    <p class="eyebrow">Hallo, Welt</p>
+    <h1 class="title">mein-erstes-projekt</h1>
+    <p class="tagline">Ein erster Schritt – tausend Teilchen, die dem Fluss folgen und deiner Maus ausweichen.</p>
+    <figure class="flower">
+      <img src="images/blume.svg" alt="Eine Blume" width="200" height="300" decoding="async">
+    </figure>
+    <button class="toggle" id="toggle" type="button" aria-pressed="false">Animation pausieren</button>
+  </main>
+
+  <script src="main.js"></script>
+</body>
+</html>
