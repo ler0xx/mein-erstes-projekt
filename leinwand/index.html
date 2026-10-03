@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>Ergebnis-Leinwand</title>
+  <meta name="description" content="Alle Ergebnisse der Agenten auf einer großen, zoombaren Leinwand.">
+  <link rel="icon" href="../images/blume.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="leinwand.css">
+</head>
+<body>
+  <header class="bar">
+    <div class="bar-title">
+      <a class="back" href="../index.html" title="Zur Startseite">←</a>
+      <div>
+        <h1>Ergebnis-Leinwand</h1>
+        <p class="sub" id="sub">Lade Ergebnisse …</p>
+      </div>
+    </div>
+    <div class="bar-tools">
+      <div class="chips" id="chips" role="group" aria-label="Nach Status filtern"></div>
+      <input class="search" id="search" type="search" placeholder="Suchen …" aria-label="Ergebnisse durchsuchen">
+    </div>
+  </header>
+
+  <main class="viewport" id="viewport" tabindex="0" aria-label="Leinwand. Ziehen zum Verschieben, Mausrad zum Zoomen.">
+    <div class="world" id="world">
+      <svg class="links" id="links" aria-hidden="true"></svg>
+    </div>
+    <div class="notice" id="notice" hidden></div>
+  </main>
+
+  <div class="zoom" role="group" aria-label="Ansicht">
+    <button type="button" id="zoom-in" title="Hineinzoomen (+)">+</button>
+    <button type="button" id="zoom-out" title="Herauszoomen (−)">−</button>
+    <button type="button" id="fit" title="Alles zeigen (0)">⤢</button>
+    <button type="button" id="reload" title="Neu von GitHub laden">↻</button>
+  </div>
+
+  <canvas class="minimap" id="minimap" width="220" height="130" aria-label="Übersichtskarte – klicken zum Springen"></canvas>
+  <p class="hint">Ziehen zum Verschieben · Mausrad zum Zoomen · Karte anklicken für Details</p>
+
+  <aside class="detail" id="detail" aria-hidden="true" aria-labelledby="detail-title">
+    <button type="button" class="detail-close" id="detail-close" title="Schließen (Esc)">×</button>
+    <div class="detail-body" id="detail-body"></div>
+  </aside>
+
+  <!-- Optional: von sammeln.mjs erzeugt, fehlt sie, geht es auch ohne. -->
+  <script src="agenten.js" onerror="window.AGENT_OFFICE = null"></script>
+  <script src="leinwand.js"></script>
+</body>
+</html>
