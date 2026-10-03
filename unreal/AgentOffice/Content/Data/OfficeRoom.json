@@ -1,0 +1,711 @@
+{
+ "_info": "Erzeugt von Scripts/grundriss_original.py aus agent-office v0.1.206 (shared/layout.ts). cm, Ursprung = Raummitte, +x = Osten, +y = Süden, yaw = Richtung der Vorderseite (0 = +x, 90 = +y). Höhen (z, hoehe, unterkante, oberkante, boden, deckenhoehe) sind wie die Grundfläche mit dem Maßstab umgerechnet; für Möbel, Türen und die Empore stehen realistische Werte in Docs/grundriss-original.md (Abschnitt Höhen).",
+ "massstab_cm_pro_original_meter": 72.7273,
+ "raum": {
+  "minX": -1309,
+  "maxX": 1309,
+  "minY": -945,
+  "maxY": 945,
+  "breite": 2618,
+  "tiefe": 1891,
+  "deckenhoehe": 495,
+  "wandstaerke": 22
+ },
+ "fenster": [
+  {
+   "wand": "Süd",
+   "von": [
+    -1127,
+    945
+   ],
+   "bis": [
+    -909,
+    945
+   ],
+   "breite": 218,
+   "unterkante": 80,
+   "oberkante": 240
+  },
+  {
+   "wand": "Süd",
+   "von": [
+    -764,
+    945
+   ],
+   "bis": [
+    -545,
+    945
+   ],
+   "breite": 218,
+   "unterkante": 80,
+   "oberkante": 240
+  },
+  {
+   "wand": "Süd",
+   "von": [
+    -36,
+    945
+   ],
+   "bis": [
+    182,
+    945
+   ],
+   "breite": 218,
+   "unterkante": 80,
+   "oberkante": 240
+  },
+  {
+   "wand": "West",
+   "von": [
+    -1309,
+    -764
+   ],
+   "bis": [
+    -1309,
+    -545
+   ],
+   "breite": 218,
+   "unterkante": 80,
+   "oberkante": 240
+  },
+  {
+   "wand": "West",
+   "von": [
+    -1309,
+    -327
+   ],
+   "bis": [
+    -1309,
+    -109
+   ],
+   "breite": 218,
+   "unterkante": 80,
+   "oberkante": 240
+  },
+  {
+   "wand": "West",
+   "von": [
+    -1309,
+    109
+   ],
+   "bis": [
+    -1309,
+    327
+   ],
+   "breite": 218,
+   "unterkante": 80,
+   "oberkante": 240
+  },
+  {
+   "wand": "Süd",
+   "von": [
+    698,
+    945
+   ],
+   "bis": [
+    902,
+    945
+   ],
+   "breite": 204,
+   "unterkante": 284,
+   "oberkante": 400,
+   "loft": true
+  },
+  {
+   "wand": "Ost",
+   "von": [
+    1309,
+    662
+   ],
+   "bis": [
+    1309,
+    865
+   ],
+   "breite": 204,
+   "unterkante": 284,
+   "oberkante": 400,
+   "loft": true
+  }
+ ],
+ "tueren": [
+  {
+   "id": "ausgang",
+   "label": "Ausgang (Treppe zur Straße)",
+   "wand": "West",
+   "von": [
+    -1309,
+    422
+   ],
+   "bis": [
+    -1309,
+    524
+   ],
+   "breite": 102,
+   "unterkante": 0,
+   "oberkante": 175
+  },
+  {
+   "id": "balkon",
+   "label": "Glasschiebetür zum Balkon",
+   "wand": "Süd",
+   "von": [
+    -400,
+    945
+   ],
+   "bis": [
+    -182,
+    945
+   ],
+   "breite": 218,
+   "unterkante": 0,
+   "oberkante": 182
+  }
+ ],
+ "wandtafeln": [
+  {
+   "id": "issues",
+   "label": "Issues",
+   "x": -851,
+   "y": -940,
+   "z": 153,
+   "yaw": 90,
+   "breite": 436,
+   "hoehe": 218,
+   "rahmen": "Holz"
+  },
+  {
+   "id": "queue",
+   "label": "Aufgaben-Warteschlange",
+   "x": -284,
+   "y": -940,
+   "z": 153,
+   "yaw": 90,
+   "breite": 436,
+   "hoehe": 218,
+   "rahmen": "Aluminium (Whiteboard)"
+  },
+  {
+   "id": "pulls",
+   "label": "Pull Requests",
+   "x": 284,
+   "y": -940,
+   "z": 153,
+   "yaw": 90,
+   "breite": 436,
+   "hoehe": 218,
+   "rahmen": "Holz"
+  },
+  {
+   "id": "services",
+   "label": "Dienste",
+   "x": 1303,
+   "y": -596,
+   "z": 153,
+   "yaw": 180,
+   "breite": 436,
+   "hoehe": 218,
+   "rahmen": "Holz"
+  },
+  {
+   "id": "meeting",
+   "label": "Besprechungs-Protokoll",
+   "x": 996,
+   "y": 940,
+   "z": 142,
+   "yaw": 270,
+   "breite": 262,
+   "hoehe": 87,
+   "rahmen": "weiß"
+  }
+ ],
+ "bildschirme": [
+  {
+   "id": "tv",
+   "label": "Fernseher (Bildschirmfreigabe)",
+   "x": 1302,
+   "y": 0,
+   "z": 160,
+   "yaw": 180,
+   "breite": 465,
+   "hoehe": 262
+  },
+  {
+   "id": "machine-monitor",
+   "label": "Rechner-Monitor (Auslastung)",
+   "x": -1309,
+   "y": -436,
+   "z": 160,
+   "yaw": 0,
+   "breite": 167,
+   "hoehe": 95
+  }
+ ],
+ "kioske": [
+  {
+   "deskId": "station-issues",
+   "x": -1135,
+   "y": -851,
+   "yaw": 90,
+   "breite": 58,
+   "tiefe": 36,
+   "hoehe": 40,
+   "farbe": "#ef476f",
+   "person": [
+    -1135,
+    -891
+   ]
+  },
+  {
+   "deskId": "station-queue",
+   "x": -567,
+   "y": -851,
+   "yaw": 90,
+   "breite": 58,
+   "tiefe": 36,
+   "hoehe": 40,
+   "farbe": "#06d6a0",
+   "person": [
+    -567,
+    -891
+   ]
+  },
+  {
+   "deskId": "station-pulls",
+   "x": 0,
+   "y": -851,
+   "yaw": 90,
+   "breite": 58,
+   "tiefe": 36,
+   "hoehe": 40,
+   "farbe": "#118ab2",
+   "person": [
+    0,
+    -891
+   ]
+  }
+ ],
+ "besprechungstisch": {
+  "x": 996,
+  "y": 764,
+  "laenge": 305,
+  "breite": 124,
+  "hoehe": 55
+ },
+ "bereiche": [
+  {
+   "id": "besprechungsraum",
+   "label": "Besprechungsraum (Glaswände Nord/West, Tür in der Nordwand)",
+   "minX": 665,
+   "maxX": 1309,
+   "minY": 593,
+   "maxY": 945,
+   "hoehe": 200,
+   "tuer_x": [
+    727,
+    829
+   ]
+  },
+  {
+   "id": "loft",
+   "label": "Chefbüro auf der Empore (über dem Besprechungsraum)",
+   "minX": 655,
+   "maxX": 1309,
+   "minY": 582,
+   "maxY": 945,
+   "boden": 218,
+   "hoehe": 204,
+   "stuetzen": [
+    [
+     665,
+     593
+    ],
+    [
+     982,
+     593
+    ]
+   ]
+  },
+  {
+   "id": "treppe",
+   "label": "Treppe zur Empore (steigt nach Osten, 15 Stufen)",
+   "minX": 218,
+   "maxX": 655,
+   "minY": 815,
+   "maxY": 945,
+   "stufen": 15
+  },
+  {
+   "id": "aufzug",
+   "label": "Aufzugsschacht, Türen nach Süden",
+   "minX": 524,
+   "maxX": 713,
+   "minY": -945,
+   "maxY": -771,
+   "tuerbreite": 102
+  },
+  {
+   "id": "balkon",
+   "label": "Raucherbalkon (draußen vor der Südwand)",
+   "minX": -764,
+   "maxX": 182,
+   "minY": 967,
+   "maxY": 1215
+  },
+  {
+   "id": "kueche_theke",
+   "label": "Küchenzeile mit Spüle und Espressomaschine",
+   "minX": -1236,
+   "maxX": -873,
+   "minY": 851,
+   "maxY": 924,
+   "hoehe": 75
+  },
+  {
+   "id": "kuehlschrank",
+   "label": "Retro-Kühlschrank",
+   "minX": -862,
+   "maxX": -782,
+   "minY": 851,
+   "maxY": 924,
+   "hoehe": 160
+  },
+  {
+   "id": "hinterzimmer",
+   "label": "Hinterzimmer (Ausbau nach Norden, hier NICHT gebaut: floorplan wing = 0)",
+   "minX": 975,
+   "maxX": 1309,
+   "minY": -1615,
+   "maxY": -945,
+   "gebaut": false
+  },
+  {
+   "id": "teppich-1",
+   "label": "Teppich unter Tischinsel",
+   "minX": -989,
+   "maxX": -538,
+   "minY": -458,
+   "maxY": -124
+  },
+  {
+   "id": "teppich-2",
+   "label": "Teppich unter Tischinsel",
+   "minX": -335,
+   "maxX": 116,
+   "minY": -458,
+   "maxY": -124
+  },
+  {
+   "id": "teppich-3",
+   "label": "Teppich unter Tischinsel",
+   "minX": -989,
+   "maxX": -538,
+   "minY": 124,
+   "maxY": 458
+  },
+  {
+   "id": "teppich-4",
+   "label": "Teppich unter Tischinsel",
+   "minX": -335,
+   "maxX": 116,
+   "minY": 124,
+   "maxY": 458
+  },
+  {
+   "id": "teppich-5",
+   "label": "Teppich Lounge",
+   "minX": 720,
+   "maxX": 1229,
+   "minY": -255,
+   "maxY": 255
+  }
+ ],
+ "objekte": [
+  {
+   "id": "sofa",
+   "label": "Lounge-Sofa (blau)",
+   "x": 764,
+   "y": 0,
+   "yaw": 0,
+   "breite": 305,
+   "tiefe": 73
+  },
+  {
+   "id": "couchtisch",
+   "label": "Runder Couchtisch",
+   "x": 945,
+   "y": 0,
+   "durchmesser": 65
+  },
+  {
+   "id": "pouf-1",
+   "label": "Pouf (zum Fernseher gedreht)",
+   "x": 909,
+   "y": 255,
+   "yaw": 327,
+   "durchmesser": 76
+  },
+  {
+   "id": "pouf-2",
+   "label": "Pouf (zum Fernseher gedreht)",
+   "x": 1055,
+   "y": -247,
+   "yaw": 45,
+   "durchmesser": 76
+  },
+  {
+   "id": "jukebox",
+   "label": "Jukebox",
+   "x": 1279,
+   "y": 393,
+   "yaw": 180,
+   "breite": 95,
+   "tiefe": 52,
+   "hoehe": 135
+  },
+  {
+   "id": "arcade",
+   "label": "Arcade-Automat",
+   "x": 1279,
+   "y": 513,
+   "yaw": 180,
+   "breite": 58,
+   "tiefe": 58,
+   "hoehe": 138
+  },
+  {
+   "id": "buecherregal",
+   "label": "Bücherregal (Projekt-Doku)",
+   "x": -473,
+   "y": 930,
+   "yaw": 270,
+   "breite": 124,
+   "tiefe": 31,
+   "hoehe": 167
+  },
+  {
+   "id": "gong",
+   "label": "Gong (läutet bei PR-Merge)",
+   "x": 858,
+   "y": -891,
+   "yaw": 90,
+   "breite": 138,
+   "hoehe": 178
+  },
+  {
+   "id": "whiteboard",
+   "label": "Whiteboard auf Rollen",
+   "x": 393,
+   "y": -393,
+   "yaw": 90,
+   "breite": 291,
+   "hoehe": 160,
+   "unterkante": 36
+  },
+  {
+   "id": "kaffeemaschine",
+   "label": "Espressomaschine (auf der Küchentheke)",
+   "x": -1142,
+   "y": 887,
+   "yaw": 270
+  },
+  {
+   "id": "feuerwehrstange",
+   "label": "Feuerwehrstange mit Geländer (unten: Matte)",
+   "x": 495,
+   "y": 116,
+   "radius_gelaender": 65
+  },
+  {
+   "id": "leiter",
+   "label": "Leiter an der Westwand (Luke in Decke/Boden)",
+   "x": -1264,
+   "y": 0,
+   "yaw": 0,
+   "breite": 45
+  },
+  {
+   "id": "basketballkorb",
+   "label": "Basketballkorb an der Westwand",
+   "x": -1264,
+   "y": 735,
+   "yaw": 0,
+   "ring": [
+    -1235,
+    735
+   ],
+   "ringhoehe": 222,
+   "freiwurflinie": 335
+  },
+  {
+   "id": "startpunkt",
+   "label": "Startpunkt des Spielers",
+   "x": 582,
+   "y": 509
+  },
+  {
+   "id": "pflanze-1",
+   "label": "Topfpflanze (Monstera)",
+   "x": -1251,
+   "y": -887,
+   "groesse": 1.4
+  },
+  {
+   "id": "pflanze-2",
+   "label": "Topfpflanze (Bogenhanf)",
+   "x": 1251,
+   "y": -887,
+   "groesse": 1.5
+  },
+  {
+   "id": "pflanze-3",
+   "label": "Topfpflanze (Ficus)",
+   "x": 1251,
+   "y": 887,
+   "groesse": 1.3
+  },
+  {
+   "id": "pflanze-4",
+   "label": "Topfpflanze (Monstera)",
+   "x": -1251,
+   "y": 618,
+   "groesse": 1.2
+  },
+  {
+   "id": "pflanze-5",
+   "label": "Topfpflanze (Bogenhanf)",
+   "x": 1033,
+   "y": -887,
+   "groesse": 1.1
+  },
+  {
+   "id": "pflanze-6",
+   "label": "Topfpflanze (Ficus)",
+   "x": -436,
+   "y": 0,
+   "groesse": 1
+  },
+  {
+   "id": "pflanze-7",
+   "label": "Topfpflanze (Monstera)",
+   "x": 255,
+   "y": 0,
+   "groesse": 0.9
+  },
+  {
+   "id": "pflanze-8",
+   "label": "Topfpflanze (Bogenhanf)",
+   "x": 618,
+   "y": 364,
+   "groesse": 1.1
+  },
+  {
+   "id": "haengeleuchte-1",
+   "label": "Pendelleuchte",
+   "x": -764,
+   "y": -291,
+   "z": 295
+  },
+  {
+   "id": "haengeleuchte-2",
+   "label": "Pendelleuchte",
+   "x": -109,
+   "y": -291,
+   "z": 295
+  },
+  {
+   "id": "haengeleuchte-3",
+   "label": "Pendelleuchte",
+   "x": -764,
+   "y": 291,
+   "z": 295
+  },
+  {
+   "id": "haengeleuchte-4",
+   "label": "Pendelleuchte",
+   "x": -109,
+   "y": 291,
+   "z": 295
+  },
+  {
+   "id": "haengeleuchte-5",
+   "label": "Pendelleuchte",
+   "x": 945,
+   "y": 0,
+   "z": 295
+  },
+  {
+   "id": "hund-platz-1",
+   "label": "Lieblingsplatz des Hundes (Lounge-Teppich)",
+   "x": 1164,
+   "y": 116
+  },
+  {
+   "id": "hund-platz-2",
+   "label": "Lieblingsplatz des Hundes (Lounge-Teppich)",
+   "x": 1164,
+   "y": -109
+  },
+  {
+   "id": "hund-platz-3",
+   "label": "Lieblingsplatz des Hundes (Lounge-Teppich)",
+   "x": 1076,
+   "y": 138
+  },
+  {
+   "id": "hund-platz-4",
+   "label": "Lieblingsplatz des Hundes (Lounge-Teppich)",
+   "x": 858,
+   "y": 175
+  },
+  {
+   "id": "hund-platz-5",
+   "label": "Lieblingsplatz des Hundes (Lounge-Teppich)",
+   "x": 858,
+   "y": -189
+  },
+  {
+   "id": "hund-platz-6",
+   "label": "Lieblingsplatz des Hundes (Lounge-Teppich)",
+   "x": 1062,
+   "y": -95
+  }
+ ],
+ "hinterzimmer_plaetze": [
+  {
+   "deskId": "desk-17",
+   "label": "Schreibtisch 17",
+   "type": "desk",
+   "x": 1142,
+   "y": -1153,
+   "yaw": 90,
+   "reihe": 1
+  },
+  {
+   "deskId": "desk-18",
+   "label": "Schreibtisch 18",
+   "type": "desk",
+   "x": 1142,
+   "y": -1073,
+   "yaw": 270,
+   "reihe": 1
+  },
+  {
+   "deskId": "desk-19",
+   "label": "Schreibtisch 19",
+   "type": "desk",
+   "x": 1142,
+   "y": -1487,
+   "yaw": 90,
+   "reihe": 2
+  },
+  {
+   "deskId": "desk-20",
+   "label": "Schreibtisch 20",
+   "type": "desk",
+   "x": 1142,
+   "y": -1407,
+   "yaw": 270,
+   "reihe": 2
+  }
+ ]
+}

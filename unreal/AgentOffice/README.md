@@ -133,7 +133,7 @@ Stand stehen. Fehlt sie dreimal hintereinander, gilt das Büro als leer.
 
 ```json
 [
-  {"deskId": "desk-1", "label": "Schreibtisch 1", "type": "desk", "x": -562, "y": -42, "yaw": 90},
+  {"deskId": "desk-1", "label": "Schreibtisch 1", "type": "desk", "x": -844, "y": -331, "yaw": 90},
   ...
 ]
 ```
@@ -142,26 +142,31 @@ Es gilt dieselbe Konvention wie im Designkonzept (`docs/agent-office-ue5/konzept
 
 | Feld | Bedeutung |
 |---|---|
-| `deskId` | muss zur `deskId` in `workers.json` passen (`desk-1` … `desk-8`, `station-pulls`, `station-queue`, `meeting-1` … `meeting-4`) |
+| `deskId` | muss zur `deskId` in `workers.json` passen (`desk-1` … `desk-16`, `station-issues`, `station-queue`, `station-pulls`, `meeting-1` … `meeting-5`, `beanbag-1` … `beanbag-12`) |
 | `label` | lesbarer Name |
-| `type` | `desk` (Schreibtisch), `station` (Wandtafel) oder `meeting` (Platz am Besprechungstisch) |
+| `type` | `desk` (Schreibtisch), `station` (Brett-Agent am Kiosk), `meeting` (Platz am Besprechungstisch) oder `beanbag` (Sitzsack) |
 | `x`, `y` | Zentimeter, Ursprung = **Raummitte** (dort steht der `OfficeDirector`), +X = Osten, +Y = Süden |
 | `yaw` | **Blickrichtung der Person** in Grad: 0 = +X, 90 = +Y, 180 = −X, 270 = −Y |
 
 Was `x`/`y` genau meint, hängt vom Typ ab:
 
 - `desk`: Mitte der Tischplatte – die Person sitzt **75 cm** entgegen der Blickrichtung
-- `station`: Mitte der Wandtafel – die Person steht **70 cm** davor
-- `meeting`: Mitte des Stuhls (= Platz der Person); `meeting-1` ist das Kopfende.
-  Der Besprechungstisch wird aus den `meeting`-Plätzen berechnet.
+- `station`: Bezugspunkt **70 cm vor** der Person – die Person steht 70 cm entgegen der
+  Blickrichtung dahinter. Im Original stehen die Brett-Agenten mit dem Rücken zur Wand hinter
+  einem Kiosk und schauen in den Raum; die Tafeln hängen daneben (siehe `OfficeRoom.json`).
+- `meeting`: Mitte des Stuhls (= Platz der Person); `meeting-1` ist der „Kopf des Tisches“.
+- `beanbag`: Platz der Person auf dem Sitzsack (kein Versatz).
 
 Die Abstände 75/70 cm lassen sich am `OfficeDirector` ändern (`DeskSeatOffset`,
 `StationStandOffset`). Mitarbeiter mit einer unbekannten `deskId` warten in einer
 „Lobby“ bei der Lounge im Südwesten.
 
-Die Koordinaten stammen aus Pixels Entwurf (`docs/agent-office-ue5/DeskLayout.json`,
-Branch `office/pixel-ue5`) und gelten als **vorläufig**. Ändert sich der Grundriss:
-Datei hierher kopieren, `build_level.py` erneut ausführen, fertig.
+Die Koordinaten sind **aus dem Browser-Office (agent-office v0.1.206) umgerechnet**
+(Maßstab 1 m = 72,73 cm, damit die Tische 160 × 80 cm groß sind). Raum, Wände, Fenster,
+Türen, Bretter und Deko stehen in `Content/Data/OfficeRoom.json`. Beide Dateien und die
+Draufsicht erzeugt `python Scripts/grundriss_original.py`; Herkunft, Umrechnung und die
+noch nötigen Anpassungen an `build_level.py` beschreibt
+[`Docs/grundriss-original.md`](Docs/grundriss-original.md).
 
 ---
 
@@ -205,8 +210,11 @@ unreal/AgentOffice/
 ├─ Config/
 │  ├─ DefaultEngine.ini      Render-Einstellungen (kommentiert)
 │  └─ DefaultGame.ini        Office-Ordner, Figur-Klasse, Packaging
-├─ Content/Data/DeskLayout.json
+├─ Content/Data/DeskLayout.json   Plätze (aus dem Browser-Office umgerechnet)
+├─ Content/Data/OfficeRoom.json   Raum, Wände, Fenster, Bretter, Deko
+├─ Docs/grundriss-original.*      Herkunft, Umrechnung, Draufsicht
 ├─ Scripts/build_level.py    erzeugt /Game/Maps/Office
+├─ Scripts/grundriss_original.py  rechnet den Grundriss des Browser-Office um
 └─ Source/AgentOffice/
    ├─ OfficeTypes.h          FOfficeWorker, FOfficeDeskSpot
    ├─ OfficeStateSubsystem.* liest workers.json
@@ -229,6 +237,6 @@ natürlich niemals Dateien aus `.agent-office/`.
 - **Glas** (Fensterfronten, Besprechungsraum), Lounge, Küchenzeile, Akustikpaneele
 - leicht leuchtende Monitore (sind vorerst aus; das Monitorlicht kommt von der Figur)
 - feste Belichtung, sobald das Licht abgestimmt ist (Designkonzept: manuell fixieren)
-- **Finale Koordinaten** aus dem Designkonzept (derzeit Pixels Entwurf übernommen)
+- `build_level.py` an den Original-Grundriss anpassen (Raum 26 × 19 m, Wände, Fenster, Deko – siehe `Docs/grundriss-original.md`)
 - Kamerafahrten / feste Kameraperspektiven
 - Visual Studio-Komponente „.NET Framework 4.6.2 Targeting Pack“ auf diesem Rechner (siehe Voraussetzungen)
