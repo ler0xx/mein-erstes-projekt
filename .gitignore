@@ -1,3 +1,6 @@
 leinwand/agenten.js
 leinwand/wand.png
 leinwand/.wand.html
+
+# E-Mail-Agent: generierte Entwürfe
+email-agent/out/
