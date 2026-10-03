@@ -11,6 +11,10 @@ wird dabei nicht verändert.
 > **Stand:** Technisches Grundgerüst mit Graubox-Level. Die Figuren sind vorerst
 > das Engine-Mannequin (dunkel eingefärbt), die Möbel einfache Quader. Echte
 > Möbel und MetaHumans (dunkler Anzug, Sonnenbrille) folgen.
+>
+> Erster kompletter Test (Editor gebaut, Level erzeugt, Agenten live aus `workers.json`):
+>
+> ![Erster Test](Docs/erster-test.png)
 
 ---
 
@@ -24,6 +28,7 @@ wird dabei nicht verändert.
 | Regie | `Source/AgentOffice/OfficeDirector.*` | setzt für jeden Mitarbeiter eine Figur an seinen Platz |
 | Figur | `Source/AgentOffice/AgentCharacter.*` | Person mit Namensschild, Bildschirmlicht und Status „arbeitet“ / „wartet“ |
 | Testlevel | `Scripts/build_level.py` | baut `/Game/Maps/Office` (Raum, Fenster, Tische, Licht, Belichtung) |
+| Screenshot | `Scripts/take_screenshot.py` | macht im laufenden Spiel automatisch ein Bild inkl. Namensschildern |
 
 ---
 
@@ -56,8 +61,9 @@ Unreal fragt dann, ob es die fehlenden Module bauen soll.
 
 ## Testlevel erzeugen
 
-Das Level ist eine Binärdatei und wird deshalb **per Skript erzeugt**
-(nicht eingecheckt). Einmal nach dem Bauen ausführen:
+Das Level (`Content/Maps/Office.umap`) und seine Graubox-Materialien
+(`Content/Graybox/`) sind eingecheckt. Sie werden **per Skript erzeugt** –
+nach einer Änderung am Grundriss oder am Skript neu erzeugen und mit committen:
 
 ```bat
 "C:/Program Files/Epic Games/UE_5.8/Engine/Binaries/Win64/UnrealEditor-Cmd.exe" "%CD%/AgentOffice.uproject" -run=pythonscript -script="%CD%/Scripts/build_level.py"
@@ -88,6 +94,18 @@ Es legt an:
   ```
 
 Mit **W A S D** + Maus fliegt man durch das Büro.
+
+Beim allerersten Start kompiliert Unreal die Shader – das dauert ein bis zwei
+Minuten, danach geht es schnell.
+
+### Screenshot ohne Fenster
+
+```bat
+"C:/Program Files/Epic Games/UE_5.8/Engine/Binaries/Win64/UnrealEditor.exe" "%CD%/AgentOffice.uproject" /Game/Maps/Office -game -RenderOffscreen -ResX=1600 -ResY=900 -log -ExecCmds="DisableAllScreenMessages, py %CD%/Scripts/take_screenshot.py"
+```
+
+Das Spiel startet unsichtbar, macht nach 45 s ein Bild (mit Namensschildern) und
+beendet sich. Das Bild liegt danach in `Saved/Screenshots/WindowsEditor/`.
 
 ---
 
@@ -206,7 +224,11 @@ unreal/AgentOffice/
 │  ├─ DefaultEngine.ini      Render-Einstellungen (kommentiert)
 │  └─ DefaultGame.ini        Office-Ordner, Figur-Klasse, Packaging
 ├─ Content/Data/DeskLayout.json
+├─ Content/Maps/Office.umap  das Level (von build_level.py erzeugt)
+├─ Content/Graybox/          Graubox-Materialien (von build_level.py erzeugt)
+├─ Docs/erster-test.png      Bild vom ersten kompletten Test
 ├─ Scripts/build_level.py    erzeugt /Game/Maps/Office
+├─ Scripts/take_screenshot.py  automatischer Screenshot im laufenden Spiel
 └─ Source/AgentOffice/
    ├─ OfficeTypes.h          FOfficeWorker, FOfficeDeskSpot
    ├─ OfficeStateSubsystem.* liest workers.json
@@ -216,8 +238,7 @@ unreal/AgentOffice/
 ```
 
 Nicht im Repo (siehe `.gitignore`): `Binaries/`, `Intermediate/`, `Saved/`,
-`DerivedDataCache/`, das erzeugte Level und die Graubox-Materialien – und
-natürlich niemals Dateien aus `.agent-office/`.
+`DerivedDataCache/` – und natürlich niemals Dateien aus `.agent-office/`.
 
 ---
 
@@ -230,5 +251,7 @@ natürlich niemals Dateien aus `.agent-office/`.
 - leicht leuchtende Monitore (sind vorerst aus; das Monitorlicht kommt von der Figur)
 - feste Belichtung, sobald das Licht abgestimmt ist (Designkonzept: manuell fixieren)
 - **Finale Koordinaten** aus dem Designkonzept (derzeit Pixels Entwurf übernommen)
-- Kamerafahrten / feste Kameraperspektiven
-- Visual Studio-Komponente „.NET Framework 4.6.2 Targeting Pack“ auf diesem Rechner (siehe Voraussetzungen)
+- Kamerafahrten / feste Kameraperspektiven – die Übersichtskamera in der Südost-Ecke
+  schneidet die Namensschilder oben ab und schaut durch die Profile des
+  Besprechungsraums (der Screenshot nutzt deshalb eine eigene Position)
+- Die Platzhalter-Animation (`Tutorial_Idle`) wirkt wie eine Boxer-Haltung – kommt mit den MetaHumans weg

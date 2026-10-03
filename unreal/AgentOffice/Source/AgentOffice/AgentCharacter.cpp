@@ -23,7 +23,10 @@ namespace AgentLook
 	// Platzhalter aus dem Engine-Content (kein Zusatz-Download nötig)
 	static const TCHAR* PlaceholderMesh = TEXT("/Engine/Tutorial/SubEditors/TutorialAssets/Character/TutorialTPP.TutorialTPP");
 	static const TCHAR* PlaceholderIdle = TEXT("/Engine/Tutorial/SubEditors/TutorialAssets/Character/Tutorial_Idle.Tutorial_Idle");
-	static const TCHAR* TintMaterial = TEXT("/Engine/BasicShapes/BasicShapeMaterial.BasicShapeMaterial");
+	// Graubox-Material aus Scripts/build_level.py – dort für Skeletal Meshes freigegeben
+	// (BasicShapeMaterial aus der Engine ist das nicht; im Spiel käme dann nur das Default-Material)
+	static const TCHAR* TintMaterial = TEXT("/Game/Graybox/Materials/M_Graybox.M_Graybox");
+	static const FName TintColorParameter(TEXT("BaseColor"));
 
 	// Zurückhaltende Farben – kein Comic-Look
 	static const FLinearColor PlateBackground(0.010f, 0.010f, 0.012f, 0.80f);
@@ -179,10 +182,20 @@ void AAgentCharacter::ApplyBodyMesh(USkeletalMesh* Mesh, bool bIsPlaceholder)
 	if (bIsPlaceholder && bTintPlaceholder)
 	{
 		// Das graue Mannequin dunkel einfärben – deutet bis zu den MetaHumans den dunklen Anzug an
-		if (UMaterialInterface* Base = LoadObject<UMaterialInterface>(nullptr, AgentLook::TintMaterial))
+		UMaterialInterface* Base = LoadObject<UMaterialInterface>(nullptr, AgentLook::TintMaterial, nullptr, LOAD_NoWarn);
+		if (!Base || !Base->GetUsageByFlag(MATUSAGE_SkeletalMesh))
+		{
+			static bool bWarned = false;
+			if (!bWarned)
+			{
+				UE_LOG(LogAgentOffice, Warning, TEXT("Agent: %s fehlt oder ist nicht für Skeletal Meshes freigegeben – Figuren bleiben ungefärbt. Scripts/build_level.py ausführen."), AgentLook::TintMaterial);
+				bWarned = true;
+			}
+		}
+		else
 		{
 			UMaterialInstanceDynamic* Suit = UMaterialInstanceDynamic::Create(Base, this);
-			Suit->SetVectorParameterValue(TEXT("Color"), PlaceholderSuitColor);
+			Suit->SetVectorParameterValue(AgentLook::TintColorParameter, PlaceholderSuitColor);
 			for (int32 Slot = 0; Slot < Body->GetNumMaterials(); ++Slot)
 			{
 				Body->SetMaterial(Slot, Suit);

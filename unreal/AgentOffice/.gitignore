@@ -6,9 +6,9 @@ DerivedDataCache/
 .vs/
 *.sln
 
-# Vom Skript Scripts/build_level.py erzeugt (binär, jederzeit neu baubar)
-Content/Maps/Office.umap
-Content/Graybox/
+# Content/Maps/Office.umap und Content/Graybox/ (von Scripts/build_level.py erzeugt)
+# sind eingecheckt, damit das Projekt nach dem Bauen sofort startet.
+# Nach einer Änderung am Grundriss das Skript erneut ausführen und beides mit committen.
 
 # Sicherheitsnetz: niemals Live-Daten des Agent Office einchecken
 workers.json
