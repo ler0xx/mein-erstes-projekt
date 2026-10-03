@@ -1,0 +1,11 @@
+# Beispiel-Briefing für den E-Mail-Kampagnen-Agenten.
+# Pflichtfelder: kampagnenname, ziel, zielgruppe, kernbotschaft, call_to_action, link
+kampagnenname: Herbst-Wurzeln
+ziel: Bestehende Newsletter-Abonnentinnen und -Abonnenten zur Herbst-Werkstatt einladen und Anmeldungen gewinnen.
+zielgruppe: Naturverbundene Menschen zwischen 30 und 60, die gern gärtnern und Wert auf nachhaltige Materialien legen.
+tonalitaet: ruhig, warm, sachlich – ohne Druck, ohne Superlative
+kernbotschaft: Im Herbst wächst unter der Erde am meisten. Die Herbst-Werkstatt zeigt, wie man Pflanzen jetzt für das nächste Jahr stärkt.
+call_to_action: Platz in der Werkstatt sichern
+link: https://example.com/herbst-werkstatt
+anzahl_mails: 3
+sprache: Deutsch
