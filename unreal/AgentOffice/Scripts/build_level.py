@@ -65,13 +65,24 @@ les = unreal.get_editor_subsystem(unreal.LevelEditorSubsystem)
 # Materialien
 # ---------------------------------------------------------------------------
 
+def allow_skeletal_mesh(mat):
+    """M_Graybox färbt auch die Platzhalter-Figuren ein (AAgentCharacter) – dafür braucht es dieses Flag."""
+    if not mat.get_editor_property("used_with_skeletal_mesh"):
+        mat.set_editor_property("used_with_skeletal_mesh", True)
+        mel.recompile_material(mat)
+        eal.save_loaded_asset(mat)
+
+
 def make_master_material():
     """M_Graybox: BaseColor/Roughness/Metallic als Parameter."""
     path = MAT_DIR + "/M_Graybox"
     if eal.does_asset_exist(path):
-        return eal.load_asset(path)
+        mat = eal.load_asset(path)
+        allow_skeletal_mesh(mat)
+        return mat
 
     mat = asset_tools.create_asset("M_Graybox", MAT_DIR, unreal.Material, unreal.MaterialFactoryNew())
+    mat.set_editor_property("used_with_skeletal_mesh", True)
 
     base = mel.create_material_expression(mat, unreal.MaterialExpressionVectorParameter, -500, -100)
     base.set_editor_property("parameter_name", "BaseColor")
