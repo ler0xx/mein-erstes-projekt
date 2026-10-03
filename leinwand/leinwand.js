@@ -8,8 +8,11 @@
   "use strict";
 
   const params = new URLSearchParams(location.search);
+  // ?wand: nur die Leinwand, ohne Bedienelemente – für das Bild an der
+  // Office-Wand (siehe bild.mjs).
+  const WALL = params.has("wand");
+  if (WALL) document.body.classList.add("wand");
   const REPO = params.get("repo") || "ler0xx/mein-erstes-projekt";
-  const API = "https://api.github.com/repos/" + REPO;
   const CACHE_KEY = "leinwand:" + REPO;
   const CACHE_MS = 10 * 60 * 1000;
   const IMG_RE = /\.(png|jpe?g|gif|webp|svg|avif)$/i;
@@ -201,82 +204,7 @@
 
   // ---------- Daten laden ----------
 
-  async function gh(path) {
-    const res = await fetch(API + path, { headers: { Accept: "application/vnd.github+json" } });
-    if (!res.ok) {
-      const limited = res.status === 403 || res.status === 429;
-      throw new Error(limited ? "Das stündliche GitHub-Limit ist erreicht." : `GitHub antwortet mit Status ${res.status}.`);
-    }
-    return res.json();
-  }
-
-  function summarize(files) {
-    return {
-      additions: files.reduce((n, f) => n + (f.add || 0), 0),
-      deletions: files.reduce((n, f) => n + (f.del || 0), 0),
-    };
-  }
-
-  const mapFile = (f) => ({ name: f.filename, status: f.status, add: f.additions, del: f.deletions });
-
-  async function loadGithub() {
-    const repo = await gh("");
-    const base = repo.default_branch;
-    const [pulls, branches] = await Promise.all([
-      gh("/pulls?state=all&per_page=100"),
-      gh("/branches?per_page=100"),
-    ]);
-
-    const prItems = await Promise.all(pulls.map(async (p) => {
-      const files = (await gh(`/pulls/${p.number}/files?per_page=100`).catch(() => [])).map(mapFile);
-      return {
-        kind: "pr",
-        id: "pr-" + p.number,
-        number: p.number,
-        state: p.merged_at ? "merged" : p.state === "open" ? (p.draft ? "draft" : "open") : "closed",
-        title: p.title,
-        body: p.body || "",
-        url: p.html_url,
-        branch: p.head.ref,
-        sha: p.head.sha,
-        created: p.created_at,
-        merged: p.merged_at,
-        closed: p.closed_at,
-        author: p.user && p.user.login,
-        files,
-        ...summarize(files),
-      };
-    }));
-
-    const prBranches = new Set(pulls.map((p) => p.head.ref));
-    const loose = branches.filter((b) => b.name !== base && !prBranches.has(b.name));
-    const branchItems = await Promise.all(loose.map(async (b) => {
-      const ref = b.name.split("/").map(encodeURIComponent).join("/");
-      const cmp = await gh(`/compare/${encodeURIComponent(base)}...${ref}`).catch(() => null);
-      if (!cmp || !cmp.ahead_by) return null;
-      const commits = cmp.commits || [];
-      const files = (cmp.files || []).map(mapFile);
-      const first = commits[0];
-      const last = commits[commits.length - 1];
-      return {
-        kind: "branch",
-        id: "branch-" + b.name,
-        state: "branch",
-        title: last ? last.commit.message.split("\n")[0] : b.name,
-        body: commits.map((c) => `- ${c.commit.message.split("\n")[0]}`).join("\n"),
-        url: `https://github.com/${REPO}/compare/${ref}`,
-        branch: b.name,
-        sha: b.commit.sha,
-        created: first ? first.commit.author.date : null,
-        updated: last ? last.commit.author.date : null,
-        commits: commits.length,
-        files,
-        ...summarize(files),
-      };
-    }));
-
-    return { base, items: [...prItems, ...branchItems.filter(Boolean)] };
-  }
+  const loadGithub = () => window.LeinwandDaten.laden(REPO);
 
   function readCache() {
     try {
@@ -297,7 +225,7 @@
   // Verknüpft GitHub-Ergebnisse mit den Aufträgen aus dem Agent Office und
   // ergänzt Aufträge, zu denen es (noch) keinen Pull Request gibt.
   function withOffice(ghItems) {
-    const office = window.AGENT_OFFICE;
+    const office = params.get("office") === "0" ? null : window.AGENT_OFFICE;
     const agents = (office && office.agenten) || [];
     const tasks = (office && office.auftraege) || [];
     const byName = new Map(agents.map((a) => [a.name.toLowerCase(), a]));
@@ -669,7 +597,7 @@
   }
 
   function fitAll(animate = true) {
-    const target = fitTarget(bounds);
+    const target = fitTarget(bounds, WALL ? MAX_K : 1);
     if (animate) animateTo(target);
     else {
       Object.assign(view, target);
@@ -680,8 +608,8 @@
   // Beim Start: alles zeigen, solange es lesbar bleibt, sonst die neuesten
   // Ergebnisse groß zeigen.
   function initialView() {
-    const target = fitTarget(bounds);
-    if (target.k >= 0.42 || !items.length) {
+    const target = fitTarget(bounds, WALL ? MAX_K : 1);
+    if (WALL || target.k >= 0.42 || !items.length) {
       Object.assign(view, target);
     } else {
       const last = items[items.length - 1];
@@ -889,7 +817,10 @@
     let when = null;
     let problem = "";
 
-    if (!force && cache && Date.now() - cache.t < CACHE_MS) {
+    if (window.LEINWAND_DATEN) {
+      data = window.LEINWAND_DATEN.data;
+      when = window.LEINWAND_DATEN.t;
+    } else if (!force && cache && Date.now() - cache.t < CACHE_MS) {
       data = cache.data;
       when = cache.t;
     } else {

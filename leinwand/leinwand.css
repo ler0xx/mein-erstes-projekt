@@ -833,3 +833,17 @@ input {
 .detail-body > .card-head {
   padding-right: 44px;
 }
+
+/* ---------- Wand-Modus (?wand) für das Bild im Agent Office ---------- */
+
+.wand .zoom,
+.wand .minimap,
+.wand .hint,
+.wand .search,
+.wand .back {
+  display: none;
+}
+
+.wand .chip {
+  cursor: default;
+}

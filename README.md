@@ -71,3 +71,20 @@ liest `.agent-office/workers.json` und `queue.json` und schreibt
 `leinwand/agenten.js`. Danach zeigt die Leinwand zu jedem Ergebnis den
 ursprünglichen Auftrag, Namen und Farbe des Agenten – und auch Aufträge, zu
 denen es noch keinen Pull Request gibt. Die Datei bleibt lokal (`.gitignore`).
+
+### Als Display an der Wand im Agent Office
+
+Die Wände im Agent Office zeigen Bilder, keine Webseiten. Deshalb rendert
+`leinwand/bild.mjs` die Leinwand im Wand-Modus (`?wand`, ohne Bedienelemente)
+als großes PNG. Die GitHub Action **Leinwand-Bild** macht das bei jedem neuen,
+geänderten oder gemergten Pull Request und legt das Bild auf den Branch
+`leinwand-bild`. Im Office hängst du es so auf: Bild aufhängen → Link einfügen:
+
+```
+https://raw.githubusercontent.com/ler0xx/mein-erstes-projekt/leinwand-bild/leinwand.png
+```
+
+Das Office lädt das Bild selbst nach (es speichert es bis zu einer Stunde
+zwischen). Von Hand neu erzeugen: in GitHub unter *Actions → Leinwand-Bild →
+Run workflow* oder lokal mit `node leinwand/bild.mjs`. Aufträge aus dem
+Agent Office kommen nicht ins Bild, weil es öffentlich ist.
