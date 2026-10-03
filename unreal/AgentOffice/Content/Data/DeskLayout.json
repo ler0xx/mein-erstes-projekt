@@ -1,0 +1,16 @@
+[
+  {"deskId": "desk-1", "label": "Schreibtisch 1", "type": "desk", "x": 300, "y": 400, "yaw": -90},
+  {"deskId": "desk-2", "label": "Schreibtisch 2", "type": "desk", "x": 700, "y": 400, "yaw": -90},
+  {"deskId": "desk-3", "label": "Schreibtisch 3", "type": "desk", "x": 1100, "y": 400, "yaw": -90},
+  {"deskId": "desk-4", "label": "Schreibtisch 4", "type": "desk", "x": 1500, "y": 400, "yaw": -90},
+  {"deskId": "desk-5", "label": "Schreibtisch 5", "type": "desk", "x": 300, "y": 800, "yaw": -90},
+  {"deskId": "desk-6", "label": "Schreibtisch 6", "type": "desk", "x": 700, "y": 800, "yaw": -90},
+  {"deskId": "desk-7", "label": "Schreibtisch 7", "type": "desk", "x": 1100, "y": 800, "yaw": -90},
+  {"deskId": "desk-8", "label": "Schreibtisch 8", "type": "desk", "x": 1500, "y": 800, "yaw": -90},
+  {"deskId": "station-pulls", "label": "PR-Brett", "type": "station", "x": 1820, "y": 500, "yaw": 0},
+  {"deskId": "station-queue", "label": "Aufgaben-Warteschlange", "type": "station", "x": 1820, "y": 1000, "yaw": 0},
+  {"deskId": "meeting-1", "label": "Besprechung – Kopf des Tisches", "type": "meeting", "x": 600, "y": 1250, "yaw": 0},
+  {"deskId": "meeting-2", "label": "Besprechung – Platz 2", "type": "meeting", "x": 850, "y": 1130, "yaw": 90},
+  {"deskId": "meeting-3", "label": "Besprechung – Platz 3", "type": "meeting", "x": 850, "y": 1370, "yaw": -90},
+  {"deskId": "meeting-4", "label": "Besprechung – Platz 4", "type": "meeting", "x": 1100, "y": 1250, "yaw": 180}
+]

@@ -1,0 +1,15 @@
+# Von Unreal/Visual Studio erzeugt – gehört nicht ins Repo
+Binaries/
+Intermediate/
+Saved/
+DerivedDataCache/
+.vs/
+*.sln
+
+# Vom Skript Scripts/build_level.py erzeugt (binär, jederzeit neu baubar)
+Content/Maps/Office.umap
+Content/Graybox/
+
+# Sicherheitsnetz: niemals Live-Daten des Agent Office einchecken
+workers.json
+.agent-office/
