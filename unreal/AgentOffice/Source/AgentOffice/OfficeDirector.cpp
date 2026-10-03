@@ -102,6 +102,33 @@ bool AOfficeDirector::GetSpotWorldTransform(const FString& DeskId, FTransform& O
 	return false;
 }
 
+bool AOfficeDirector::GetPersonWorldTransform(const FString& DeskId, FTransform& OutTransform) const
+{
+	if (const int32* Index = SpotIndexById.Find(DeskId))
+	{
+		OutTransform = PersonLocalTransform(Spots[*Index]) * GetActorTransform();
+		return true;
+	}
+	return false;
+}
+
+FTransform AOfficeDirector::PersonLocalTransform(const FOfficeDeskSpot& Spot) const
+{
+	float BackOffset = 0.f;
+	if (Spot.Type.Equals(TEXT("desk"), ESearchCase::IgnoreCase))
+	{
+		BackOffset = DeskSeatOffset;
+	}
+	else if (Spot.Type.Equals(TEXT("station"), ESearchCase::IgnoreCase))
+	{
+		BackOffset = StationStandOffset;
+	}
+
+	FTransform Local = Spot.ToLocalTransform();
+	Local.AddToTranslation(Local.GetRotation().RotateVector(FVector(-BackOffset, 0.f, 0.f)));
+	return Local;
+}
+
 void AOfficeDirector::HandleWorkerArrived(const FOfficeWorker& Worker)
 {
 	SpawnAgent(Worker);
@@ -194,7 +221,7 @@ FTransform AOfficeDirector::ComputeAgentTransform(const FOfficeWorker& Worker, c
 			}
 		}
 
-		FTransform Local = Spot.ToLocalTransform();
+		FTransform Local = PersonLocalTransform(Spot);
 		Local.AddToTranslation(Local.GetRotation().RotateVector(FVector(0.f, SharedSpotSpacing * Others, 0.f)));
 		OutSpotType = Spot.Type;
 		return Local * GetActorTransform();
@@ -216,6 +243,7 @@ FTransform AOfficeDirector::ComputeAgentTransform(const FOfficeWorker& Worker, c
 	}
 
 	OutSpotType = TEXT("lobby");
-	const FTransform Local(FRotator(0.f, LobbyYaw, 0.f), LobbyLocation + FVector(-LobbySpacing * LobbyIndex, 0.f, 0.f));
-	return Local * GetActorTransform();
+	const FRotator LobbyRotation(0.f, LobbyYaw, 0.f);
+	const FVector Sideways = LobbyRotation.RotateVector(FVector(0.f, LobbySpacing * LobbyIndex, 0.f));
+	return FTransform(LobbyRotation, LobbyLocation + Sideways) * GetActorTransform();
 }

@@ -64,15 +64,20 @@ Das Level ist eine Binärdatei und wird deshalb **per Skript erzeugt**
 ```
 
 Das Skript ist wiederholbar – nach einer Änderung am Grundriss einfach erneut
-ausführen. Es legt an:
+ausführen. Raum und Licht folgen dem Designkonzept (`docs/agent-office-ue5/konzept.md`).
+Es legt an:
 
-- Raum 20 × 16 m, 3 m hoch, Eichenboden, Südwand mit drei großen Fensteröffnungen
+- offener Raum 16 × 11 m, 3,10 m hoch: Eichenboden, Sichtbeton im Norden (mit Eingang)
+  und Osten, Stahlfensterfronten im Westen und Süden (Öffnungen, Glas folgt)
+- Stahlprofile des gläsernen Besprechungsraums im Osten
 - Schreibtische mit Monitor, Tastatur und Stuhl an allen `desk`-Plätzen
-- Tafeln an den Stationen, Besprechungstisch aus den `meeting`-Plätzen
-- Sonne (75 000 lx), Himmelslicht, Atmosphäre, Wolken, leichter Dunst
-- sechs Deckenleuchten (je 2 800 lm, 4 000 K)
-- Post-Process mit automatischer Belichtung (EV100 6–13) und zurückhaltenden Linseneffekten
-- den `OfficeDirector` und einen Startpunkt
+- Tafeln mit Messingrahmen an den Stationen, Besprechungstisch aus den `meeting`-Plätzen
+- tiefe Nachmittagssonne aus Westen (40 000 lx, 5 200 K), Himmelslicht, Atmosphäre,
+  Wolken, ein Hauch volumetrischer Dunst
+- drei gedimmte Linienleuchten über den Tischinseln (je 2 500 lm, 4 000 K)
+- Post-Process mit träger Belichtung (EV100 8,5–10,5) und zurückhaltenden Linseneffekten
+- den `OfficeDirector` in der Raummitte, einen Startpunkt und eine Übersichtskamera
+  (Südost-Ecke, Blick nach Nordwest)
 
 ## Starten
 
@@ -128,26 +133,35 @@ Stand stehen. Fehlt sie dreimal hintereinander, gilt das Büro als leer.
 
 ```json
 [
-  {"deskId": "desk-1", "label": "Schreibtisch 1", "type": "desk", "x": 300, "y": 400, "yaw": -90},
+  {"deskId": "desk-1", "label": "Schreibtisch 1", "type": "desk", "x": -562, "y": -42, "yaw": 90},
   ...
 ]
 ```
+
+Es gilt dieselbe Konvention wie im Designkonzept (`docs/agent-office-ue5/konzept.md`):
 
 | Feld | Bedeutung |
 |---|---|
 | `deskId` | muss zur `deskId` in `workers.json` passen (`desk-1` … `desk-8`, `station-pulls`, `station-queue`, `meeting-1` … `meeting-4`) |
 | `label` | lesbarer Name |
-| `type` | `desk` (Schreibtisch), `station` (Tafel/Brett) oder `meeting` (Platz am Besprechungstisch) |
-| `x`, `y` | **Standort der Person** in cm, relativ zum `OfficeDirector` (im Testlevel = Raumecke an der Fensterwand) |
-| `yaw` | **Blickrichtung der Person** in Grad: 0 = +X (Osten), 90 = +Y (weg vom Fenster), −90 = zum Fenster |
+| `type` | `desk` (Schreibtisch), `station` (Wandtafel) oder `meeting` (Platz am Besprechungstisch) |
+| `x`, `y` | Zentimeter, Ursprung = **Raummitte** (dort steht der `OfficeDirector`), +X = Osten, +Y = Süden |
+| `yaw` | **Blickrichtung der Person** in Grad: 0 = +X, 90 = +Y, 180 = −X, 270 = −Y |
 
-Der Tisch steht vor der Person (in Blickrichtung). `meeting-1` ist der Kopf des
-Besprechungstisches; der Tisch selbst wird aus den `meeting`-Plätzen berechnet.
-Mitarbeiter mit einer unbekannten `deskId` warten in einer „Lobby“ an der Nordwand.
+Was `x`/`y` genau meint, hängt vom Typ ab:
 
-Die aktuellen Koordinaten sind **Platzhalter**. Die finalen liefert das
-Designkonzept (`docs/agent-office-ue5/`) im selben Format – Datei ersetzen,
-`build_level.py` erneut ausführen, fertig.
+- `desk`: Mitte der Tischplatte – die Person sitzt **75 cm** entgegen der Blickrichtung
+- `station`: Mitte der Wandtafel – die Person steht **70 cm** davor
+- `meeting`: Mitte des Stuhls (= Platz der Person); `meeting-1` ist das Kopfende.
+  Der Besprechungstisch wird aus den `meeting`-Plätzen berechnet.
+
+Die Abstände 75/70 cm lassen sich am `OfficeDirector` ändern (`DeskSeatOffset`,
+`StationStandOffset`). Mitarbeiter mit einer unbekannten `deskId` warten in einer
+„Lobby“ bei der Lounge im Südwesten.
+
+Die Koordinaten stammen aus Pixels Entwurf (`docs/agent-office-ue5/DeskLayout.json`,
+Branch `office/pixel-ue5`) und gelten als **vorläufig**. Ändert sich der Grundriss:
+Datei hierher kopieren, `build_level.py` erneut ausführen, fertig.
 
 ---
 
@@ -174,7 +188,7 @@ Die Figur ist austauschbar, ohne Code zu ändern:
 
 | | arbeitet | wartet |
 |---|---|---|
-| Bildschirmlicht am Tisch | an (kühles Monitorlicht, 160 lm) | fast aus |
+| Bildschirmlicht am Tisch | an (kühles Monitorlicht, 160 lm, nur an `desk`-Plätzen) | fast aus |
 | Animation | normale Geschwindigkeit | ruhiger |
 | Namensschild | „arbeitet“ mit grünem Punkt | „wartet“ mit grauem Punkt |
 
@@ -211,7 +225,10 @@ natürlich niemals Dateien aus `.agent-office/`.
 
 - **Echte Möbel und Raum-Assets** (Tische, Stühle, Monitore, Glas in den Fenstern, Pflanzen, Deckenleuchten) statt Graubox
 - **MetaHumans** in dunklen Anzügen mit Sonnenbrillen (als `AgentCharacter`-Blueprint)
-- **Sitz- und Tipp-Animationen** (das Mannequin steht vorerst hinter dem Stuhl)
-- **Finale Koordinaten** aus dem Designkonzept
+- **Sitz- und Tipp-Animationen** (das Mannequin steht vorerst; die Stühle sind dafür etwas zurückgerollt)
+- **Glas** (Fensterfronten, Besprechungsraum), Lounge, Küchenzeile, Akustikpaneele
+- leicht leuchtende Monitore (sind vorerst aus; das Monitorlicht kommt von der Figur)
+- feste Belichtung, sobald das Licht abgestimmt ist (Designkonzept: manuell fixieren)
+- **Finale Koordinaten** aus dem Designkonzept (derzeit Pixels Entwurf übernommen)
 - Kamerafahrten / feste Kameraperspektiven
 - Visual Studio-Komponente „.NET Framework 4.6.2 Targeting Pack“ auf diesem Rechner (siehe Voraussetzungen)

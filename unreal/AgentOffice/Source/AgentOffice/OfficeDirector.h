@@ -14,7 +14,8 @@ class USkeletalMesh;
  * workers.json eine Figur (AAgentCharacter) an ihren Platz. Kommt jemand,
  * geht jemand oder ändert sich sein Status, wird die Figur angepasst.
  *
- * Die Koordinaten im Grundriss sind relativ zu diesem Actor.
+ * Die Koordinaten im Grundriss sind relativ zu diesem Actor (im Testlevel
+ * steht er in der Raummitte). Bedeutung von x/y je Platztyp: siehe FOfficeDeskSpot.
  */
 UCLASS(Config = Game)
 class AGENTOFFICE_API AOfficeDirector : public AActor
@@ -34,9 +35,13 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Agent Office")
 	TArray<FOfficeDeskSpot> GetDeskSpots() const { return Spots; }
 
-	/** Welttransform eines Platzes (Standort + Blickrichtung der Person). */
+	/** Welttransform eines Platzes, so wie er in DeskLayout.json steht (z. B. Tischmitte). */
 	UFUNCTION(BlueprintPure, Category = "Agent Office")
 	bool GetSpotWorldTransform(const FString& DeskId, FTransform& OutTransform) const;
+
+	/** Wo die Person an diesem Platz steht/sitzt (Welt), mit ihrer Blickrichtung. */
+	UFUNCTION(BlueprintPure, Category = "Agent Office")
+	bool GetPersonWorldTransform(const FString& DeskId, FTransform& OutTransform) const;
 
 protected:
 	virtual void BeginPlay() override;
@@ -46,14 +51,23 @@ protected:
 	UPROPERTY(EditAnywhere, Config, Category = "Agent Office|Grundriss")
 	FString LayoutFile = TEXT("Data/DeskLayout.json");
 
-	/** Platz für Mitarbeiter, deren deskId nicht im Grundriss steht (relativ zu diesem Actor). */
-	UPROPERTY(EditAnywhere, Category = "Agent Office|Grundriss")
-	FVector LobbyLocation = FVector(1850.f, 1480.f, 0.f);
+	/** Abstand Tischmitte -> Person bei "desk" (cm, entgegen der Blickrichtung). */
+	UPROPERTY(EditAnywhere, Config, Category = "Agent Office|Grundriss")
+	float DeskSeatOffset = 75.f;
 
+	/** Abstand Tafel -> Person bei "station" (cm, entgegen der Blickrichtung). */
+	UPROPERTY(EditAnywhere, Config, Category = "Agent Office|Grundriss")
+	float StationStandOffset = 70.f;
+
+	/** Platz für Mitarbeiter, deren deskId nicht im Grundriss steht (relativ zu diesem Actor; Lounge im Südwesten). */
+	UPROPERTY(EditAnywhere, Category = "Agent Office|Grundriss")
+	FVector LobbyLocation = FVector(-680.f, 400.f, 0.f);
+
+	/** Blickrichtung der Wartenden in der Lobby (-90 = Richtung Norden/Tische). */
 	UPROPERTY(EditAnywhere, Category = "Agent Office|Grundriss")
 	float LobbyYaw = -90.f;
 
-	/** Abstand zwischen Wartenden in der Lobby (cm, entlang -X). */
+	/** Abstand zwischen Wartenden in der Lobby (cm, nebeneinander). */
 	UPROPERTY(EditAnywhere, Category = "Agent Office|Grundriss")
 	float LobbySpacing = 90.f;
 
@@ -85,6 +99,7 @@ private:
 
 	void SpawnAgent(const FOfficeWorker& Worker);
 	void PlaceAgent(AAgentCharacter* Agent, const FOfficeWorker& Worker);
+	FTransform PersonLocalTransform(const FOfficeDeskSpot& Spot) const;
 	FTransform ComputeAgentTransform(const FOfficeWorker& Worker, const AAgentCharacter* Self, FString& OutSpotType) const;
 
 	TArray<FOfficeDeskSpot> Spots;

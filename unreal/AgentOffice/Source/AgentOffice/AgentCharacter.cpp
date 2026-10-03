@@ -69,8 +69,8 @@ AAgentCharacter::AAgentCharacter()
 
 	ScreenLight = CreateDefaultSubobject<URectLightComponent>(TEXT("ScreenLight"));
 	ScreenLight->SetupAttachment(SceneRoot);
-	// Etwa dort, wo der Monitor auf dem Tisch steht; strahlt zurück zur Person
-	ScreenLight->SetRelativeLocation(FVector(88.f, 0.f, 105.f));
+	// Vor dem Monitor (Person sitzt 75 cm hinter der Tischmitte, Monitor ~28 cm hinter der Mitte); strahlt zurück zur Person
+	ScreenLight->SetRelativeLocation(FVector(98.f, 0.f, 105.f));
 	ScreenLight->SetRelativeRotation(FRotator(10.f, 180.f, 0.f));
 	ScreenLight->IntensityUnits = ELightUnits::Lumens;
 	ScreenLight->Intensity = 0.f;

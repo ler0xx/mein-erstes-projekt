@@ -12,6 +12,12 @@ Das Skript ist wiederholbar: Existiert das Level schon, wird sein Inhalt
 komplett ersetzt. Tische, Stühle usw. werden aus Content/Data/DeskLayout.json
 erzeugt – derselben Datei, die der AOfficeDirector zur Laufzeit liest.
 
+Raum, Licht und Materialien folgen dem Designkonzept
+(docs/agent-office-ue5/konzept.md): offener Raum 16 x 11 m, 3,10 m hoch,
+Ursprung = Raummitte, +X = Osten, +Y = Süden. Fensterfronten im Westen und
+Süden, Sichtbeton im Norden (mit Eingang) und Osten, gläserner
+Besprechungsraum im Osten, tiefe Nachmittagssonne aus Westen.
+
 Alles hier ist bewusst Graubox (einfache Quader mit realistischen
 Materialwerten). Echte Möbel/Assets kommen später.
 """
@@ -25,16 +31,27 @@ import unreal
 MAP_PATH = "/Game/Maps/Office"
 MAT_DIR = "/Game/Graybox/Materials"
 
-# Raum (cm). Ursprung = Ecke Fensterwand/Westwand, Boden-Oberkante bei Z = 0.
-ROOM_W = 2000.0   # entlang X
-ROOM_D = 1600.0   # entlang Y
-ROOM_H = 300.0
-WALL_T = 30.0
-SILL_H = 80.0     # Brüstungshöhe der Fenster
-WINDOW_TOP = 270.0
-WINDOWS = [(200.0, 600.0), (800.0, 1200.0), (1400.0, 1800.0)]  # Fensteröffnungen in der Südwand (y = 0)
+# Raum (cm, Innenmaß). Ursprung = Raummitte, Boden-Oberkante bei Z = 0.
+ROOM_W = 1600.0   # entlang X (West -> Ost)
+ROOM_D = 1100.0   # entlang Y (Nord -> Süd)
+ROOM_H = 310.0
+HX, HY = ROOM_W / 2, ROOM_D / 2
+WALL_T = 25.0
+SILL_H = 45.0        # Brüstung der Stahlfenster
+WINDOW_TOP = 285.0
+WINDOW_POSTS = 5     # Pfosten je Fensterfront (wie im Grundriss)
+ENTRANCE = (160.0, 260.0, 220.0)   # Eingang Nordwand: x von, x bis, Höhe
+
+# Besprechungsraum (Glaswände mit Stahlprofilen)
+GLASS_X = 280.0
+GLASS_Y = 330.0
+GLASS_DOOR = (-GLASS_Y + 90.0, -GLASS_Y + 190.0)  # Türöffnung in der Westglaswand (y von, y bis)
 
 DESK_H = 75.0
+DESK_SEAT_OFFSET = 75.0     # Tischmitte -> Person (wie im Designkonzept)
+STATION_STAND_OFFSET = 70.0
+# Die Platzhalter-Figuren stehen noch (keine Sitz-Animation) – Stühle daher etwas zurückgerollt
+CHAIR_PUSHED_BACK = 35.0
 
 log = unreal.log
 asset_tools = unreal.AssetToolsHelpers.get_asset_tools()
@@ -95,20 +112,18 @@ def make_mi(master, name, color, roughness, metallic=0.0):
 
 def make_materials():
     master = make_master_material()
-    # Realistische Albedo-Werte: nichts ist ganz weiß oder ganz schwarz
+    # Palette aus dem Designkonzept; realistische Albedo-Werte (nichts ganz weiß oder schwarz)
     return {
-        "floor":   make_mi(master, "MI_Floor_Oak",       (0.28, 0.17, 0.09), 0.45),
-        "wall":    make_mi(master, "MI_Wall_Plaster",    (0.70, 0.69, 0.66), 0.90),
-        "ceiling": make_mi(master, "MI_Ceiling",         (0.78, 0.78, 0.76), 0.95),
-        "desk":    make_mi(master, "MI_Desk_Laminate",   (0.62, 0.61, 0.58), 0.40),
-        "walnut":  make_mi(master, "MI_Table_Walnut",    (0.09, 0.045, 0.02), 0.35),
-        "metal":   make_mi(master, "MI_Metal_Black",     (0.03, 0.03, 0.03), 0.35, 1.0),
-        "alu":     make_mi(master, "MI_Metal_Alu",       (0.60, 0.60, 0.62), 0.30, 1.0),
-        "fabric":  make_mi(master, "MI_Chair_Fabric",    (0.018, 0.018, 0.02), 0.90),
-        "screen":  make_mi(master, "MI_Screen_Off",      (0.004, 0.004, 0.005), 0.12),
-        "board":   make_mi(master, "MI_Whiteboard",      (0.80, 0.80, 0.79), 0.20),
-        "panel":   make_mi(master, "MI_LightPanel",      (0.85, 0.85, 0.85), 0.60),
-        "ground":  make_mi(master, "MI_Ground_Outside",  (0.12, 0.12, 0.11), 0.90),
+        "oak":      make_mi(master, "MI_Oak_Oiled",        (0.30, 0.19, 0.10), 0.50),
+        "concrete": make_mi(master, "MI_Concrete",         (0.33, 0.32, 0.30), 0.80),
+        "ceiling":  make_mi(master, "MI_Concrete_Ceiling", (0.38, 0.37, 0.35), 0.85),
+        "steel":    make_mi(master, "MI_Steel_Black",      (0.025, 0.025, 0.025), 0.55, 1.0),
+        "brass":    make_mi(master, "MI_Brass_Brushed",    (0.62, 0.45, 0.20), 0.35, 1.0),
+        "felt":     make_mi(master, "MI_Felt_Sage",        (0.10, 0.13, 0.09), 0.95),
+        "screen":   make_mi(master, "MI_Screen_Off",       (0.004, 0.004, 0.005), 0.12),
+        "board":    make_mi(master, "MI_Board",            (0.70, 0.69, 0.66), 0.35),
+        "walnut":   make_mi(master, "MI_Table_Walnut",     (0.09, 0.045, 0.02), 0.35),
+        "ground":   make_mi(master, "MI_Roof_Outside",     (0.12, 0.12, 0.11), 0.90),
     }
 
 
@@ -120,7 +135,7 @@ CUBE = None
 
 
 def box(label, center, size, mat, yaw=0.0, folder="Graybox"):
-    """Quader mit Mittelpunkt `center` und Kantenlängen `size` (cm)."""
+    """Quader mit Mittelpunkt `center` und Kantenlängen `size` (cm, vor der Drehung um `yaw`)."""
     actor = eas.spawn_actor_from_class(
         unreal.StaticMeshActor,
         unreal.Vector(center[0], center[1], center[2]),
@@ -132,6 +147,15 @@ def box(label, center, size, mat, yaw=0.0, folder="Graybox"):
     actor.set_actor_label(label)
     actor.set_folder_path(folder)
     return actor
+
+
+def box_span(label, a, b, z0, z1, depth, mat, folder):
+    """Quader zwischen zwei Bodenpunkten a und b (Wand-/Profilstück)."""
+    dx, dy = b[0] - a[0], b[1] - a[1]
+    length = math.hypot(dx, dy)
+    yaw = math.degrees(math.atan2(dy, dx))
+    center = ((a[0] + b[0]) / 2, (a[1] + b[1]) / 2, (z0 + z1) / 2)
+    return box(label, center, (length, depth, z1 - z0), mat, yaw, folder)
 
 
 def local(spot, forward, side, z):
@@ -169,92 +193,121 @@ def load_layout():
 # Raum
 # ---------------------------------------------------------------------------
 
+def window_front(name, a, b, m, folder):
+    """Stahlfensterfront zwischen a und b: Brüstung, Sturz, Pfosten. (Glas folgt mit echten Assets.)"""
+    box_span(name + "_Bruestung", a, b, 0.0, SILL_H, WALL_T, m["concrete"], folder)
+    box_span(name + "_Sturz", a, b, WINDOW_TOP, ROOM_H, WALL_T, m["concrete"], folder)
+    box_span(name + "_Profil_Unten", a, b, SILL_H, SILL_H + 6.0, 8.0, m["steel"], folder)
+    box_span(name + "_Profil_Oben", a, b, WINDOW_TOP - 6.0, WINDOW_TOP, 8.0, m["steel"], folder)
+    box_span(name + "_Riegel", a, b, 210.0, 214.0, 6.0, m["steel"], folder)
+    for i in range(WINDOW_POSTS + 2):
+        t = i / float(WINDOW_POSTS + 1)
+        p = (a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t)
+        width = 12.0 if i in (0, WINDOW_POSTS + 1) else 6.0
+        along_x = a[1] == b[1]
+        size = (width, 8.0, WINDOW_TOP - SILL_H) if along_x else (8.0, width, WINDOW_TOP - SILL_H)
+        box("{}_Pfosten_{}".format(name, i), (p[0], p[1], (SILL_H + WINDOW_TOP) / 2), size, m["steel"], folder=folder)
+
+
 def build_room(m):
-    W, D, H, T = ROOM_W, ROOM_D, ROOM_H, WALL_T
+    T = WALL_T
     f = "Graybox/Raum"
 
-    box("Boden", (W / 2, D / 2, -5), (W + 2 * T, D + 2 * T, 10), m["floor"], folder=f)
-    box("Decke", (W / 2, D / 2, H + 15), (W + 2 * T, D + 2 * T, 30), m["ceiling"], folder=f)
-    box("Aussengelaende", (W / 2, D / 2, -20), (30000, 30000, 10), m["ground"], folder=f)
+    box("Boden_Eiche", (0, 0, -5), (ROOM_W + 2 * T, ROOM_D + 2 * T, 10), m["oak"], folder=f)
+    box("Decke_Beton", (0, 0, ROOM_H + 15), (ROOM_W + 2 * T, ROOM_D + 2 * T, 30), m["ceiling"], folder=f)
+    box("Dach_Umgebung", (0, 0, -20), (30000, 30000, 10), m["ground"], folder=f)
 
-    box("Wand_Nord", (W / 2, D + T / 2, H / 2), (W + 2 * T, T, H), m["wall"], folder=f)
-    box("Wand_Ost", (W + T / 2, D / 2, H / 2), (T, D, H), m["wall"], folder=f)
-    box("Wand_West", (-T / 2, D / 2, H / 2), (T, D, H), m["wall"], folder=f)
+    # Nordwand (Sichtbeton) mit Eingang
+    y = -HY - T / 2
+    x0, x1, door_h = ENTRANCE
+    box_span("Wand_Nord_West", (-HX - T, y), (x0, y), 0, ROOM_H, T, m["concrete"], f)
+    box_span("Wand_Nord_Ost", (x1, y), (HX + T, y), 0, ROOM_H, T, m["concrete"], f)
+    box_span("Wand_Nord_Tuersturz", (x0, y), (x1, y), door_h, ROOM_H, T, m["concrete"], f)
 
-    # Südwand mit Fensteröffnungen: Brüstung + Sturz + Pfeiler
-    y = -T / 2
-    box("Wand_Sued_Bruestung", (W / 2, y, SILL_H / 2), (W + 2 * T, T, SILL_H), m["wall"], folder=f)
-    box("Wand_Sued_Sturz", (W / 2, y, (WINDOW_TOP + H) / 2), (W + 2 * T, T, H - WINDOW_TOP), m["wall"], folder=f)
-    edges = [-T] + [e for win in WINDOWS for e in win] + [W + T]
-    for i in range(0, len(edges), 2):
-        x0, x1 = edges[i], edges[i + 1]
-        box("Wand_Sued_Pfeiler_{}".format(i // 2 + 1), ((x0 + x1) / 2, y, (SILL_H + WINDOW_TOP) / 2),
-            (x1 - x0, T, WINDOW_TOP - SILL_H), m["wall"], folder=f)
+    # Ostwand (Sichtbeton)
+    x = HX + T / 2
+    box_span("Wand_Ost", (x, -HY), (x, HY), 0, ROOM_H, T, m["concrete"], f)
 
-    # Schmale Fensterrahmen (dunkles Metall), Glas folgt mit echten Assets
+    # Fensterfronten West und Süd
     fw = "Graybox/Fenster"
-    win_h = WINDOW_TOP - SILL_H
-    for n, (x0, x1) in enumerate(WINDOWS, start=1):
-        cx = (x0 + x1) / 2
-        box("Fenster{}_Rahmen_Unten".format(n), (cx, y, SILL_H + 2.5), (x1 - x0, 8, 5), m["metal"], folder=fw)
-        box("Fenster{}_Rahmen_Oben".format(n), (cx, y, WINDOW_TOP - 2.5), (x1 - x0, 8, 5), m["metal"], folder=fw)
-        box("Fenster{}_Rahmen_Links".format(n), (x0 + 2.5, y, SILL_H + win_h / 2), (5, 8, win_h), m["metal"], folder=fw)
-        box("Fenster{}_Rahmen_Rechts".format(n), (x1 - 2.5, y, SILL_H + win_h / 2), (5, 8, win_h), m["metal"], folder=fw)
-        box("Fenster{}_Sprosse".format(n), (cx, y, SILL_H + win_h / 2), (4, 6, win_h), m["metal"], folder=fw)
-        box("Fenster{}_Fensterbank".format(n), (cx, 12, SILL_H + 1.5), (x1 - x0 + 10, 26, 3), m["desk"], folder=fw)
+    window_front("Fenster_West", (-HX - T / 2, -HY), (-HX - T / 2, HY + T), m, fw)
+    window_front("Fenster_Sued", (-HX, HY + T / 2), (HX + T, HY + T / 2), m, fw)
+
+
+def build_meeting_room_frame(m):
+    """Gläserner Besprechungsraum – vorerst nur die Stahlprofile am Boden, an der Decke und als Pfosten."""
+    f = "Graybox/Besprechungsraum"
+    segments = [
+        ("Nord", (GLASS_X, -GLASS_Y), (HX, -GLASS_Y)),
+        ("Sued", (GLASS_X, GLASS_Y), (HX, GLASS_Y)),
+        ("West_1", (GLASS_X, -GLASS_Y), (GLASS_X, GLASS_DOOR[0])),
+        ("West_2", (GLASS_X, GLASS_DOOR[1]), (GLASS_X, GLASS_Y)),
+    ]
+    for name, a, b in segments:
+        box_span("Glaswand_{}_Profil_Boden".format(name), a, b, 0, 5, 6, m["steel"], f)
+        box_span("Glaswand_{}_Profil_Decke".format(name), a, b, ROOM_H - 5, ROOM_H, 6, m["steel"], f)
+        length = math.hypot(b[0] - a[0], b[1] - a[1])
+        posts = max(1, int(length // 130))
+        for i in range(posts + 1):
+            t = i / float(posts)
+            p = (a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t)
+            box("Glaswand_{}_Pfosten_{}".format(name, i), (p[0], p[1], ROOM_H / 2), (5, 5, ROOM_H), m["steel"], folder=f)
 
 
 # ---------------------------------------------------------------------------
 # Möbel aus dem Grundriss
 # ---------------------------------------------------------------------------
 
-def build_chair(name, spot, m, folder, back_offset=-45.0):
+def build_chair(name, spot, seat_forward, m, folder):
+    """Stuhl, dessen Sitzmitte `seat_forward` cm vor dem Platz liegt (negativ = dahinter)."""
     yaw = spot["yaw"]
-    box(name + "_Sitz", local(spot, back_offset, 0, 46), (48, 48, 7), m["fabric"], yaw, folder)
-    box(name + "_Lehne", local(spot, back_offset - 24, 0, 80), (6, 46, 56), m["fabric"], yaw, folder)
-    box(name + "_Saeule", local(spot, back_offset, 0, 23), (5, 5, 40), m["metal"], yaw, folder)
-    box(name + "_Fuss", local(spot, back_offset, 0, 2), (56, 56, 4), m["metal"], yaw, folder)
+    box(name + "_Sitz", local(spot, seat_forward, 0, 46), (48, 48, 7), m["felt"], yaw, folder)
+    box(name + "_Lehne", local(spot, seat_forward - 24, 0, 80), (6, 46, 56), m["felt"], yaw, folder)
+    box(name + "_Saeule", local(spot, seat_forward, 0, 23), (5, 5, 40), m["steel"], yaw, folder)
+    box(name + "_Fuss", local(spot, seat_forward, 0, 2), (56, 56, 4), m["steel"], yaw, folder)
 
 
 def build_desk(spot, m):
+    """x/y = Mitte der Tischplatte (160 x 80 cm); die Person sitzt 75 cm dahinter."""
     d = spot["deskId"]
     yaw = spot["yaw"]
     f = "Graybox/Arbeitsplaetze/" + d
-    box(d + "_Platte", local(spot, 75, 0, DESK_H - 1.5), (80, 160, 3), m["desk"], yaw, f)
+    box(d + "_Platte", local(spot, 0, 0, DESK_H - 1.5), (80, 160, 3), m["oak"], yaw, f)
     for side, sign in (("L", -1), ("R", 1)):
-        box(d + "_Wange_" + side, local(spot, 75, sign * 77, (DESK_H - 3) / 2), (70, 3, DESK_H - 3), m["metal"], yaw, f)
-    box(d + "_Monitor", local(spot, 98, 0, 104), (2.5, 62, 37), m["screen"], yaw, f)
-    box(d + "_Monitor_Arm", local(spot, 102, 0, 83), (3, 6, 18), m["alu"], yaw, f)
-    box(d + "_Monitor_Fuss", local(spot, 100, 0, DESK_H + 0.5), (18, 22, 1), m["alu"], yaw, f)
-    box(d + "_Tastatur", local(spot, 55, 0, DESK_H + 0.8), (14, 44, 1.6), m["metal"], yaw, f)
-    build_chair(d + "_Stuhl", spot, m, f)
+        box(d + "_Kufe_" + side, local(spot, 0, sign * 76, (DESK_H - 3) / 2), (70, 4, DESK_H - 3), m["steel"], yaw, f)
+    box(d + "_Monitor", local(spot, 28, 0, 104), (2.5, 62, 37), m["screen"], yaw, f)
+    box(d + "_Monitor_Arm", local(spot, 31, 0, 83), (3, 6, 18), m["steel"], yaw, f)
+    box(d + "_Monitor_Fuss", local(spot, 30, 0, DESK_H + 0.5), (18, 22, 1), m["steel"], yaw, f)
+    box(d + "_Tastatur", local(spot, -15, 0, DESK_H + 0.8), (14, 44, 1.6), m["steel"], yaw, f)
+    build_chair(d + "_Stuhl", spot, -DESK_SEAT_OFFSET - CHAIR_PUSHED_BACK, m, f)
 
 
 def build_station(spot, m):
+    """x/y = Mitte der Wandtafel; die Person steht 70 cm davor."""
     d = spot["deskId"]
     yaw = spot["yaw"]
     f = "Graybox/Stationen/" + d
-    # Tafel an der Wand vor der Person
-    box(d + "_Tafel", local(spot, 172, 0, 150), (2, 180, 110), m["board"], yaw, f)
-    box(d + "_Tafel_Rahmen", local(spot, 174, 0, 150), (2, 186, 116), m["alu"], yaw, f)
+    box(d + "_Tafel", local(spot, 0, 0, 150), (4, 200, 120), m["board"], yaw, f)
+    box(d + "_Tafel_Rahmen", local(spot, 3, 0, 150), (2, 206, 126), m["brass"], yaw, f)
 
 
 def build_meeting(spots, m):
+    """x/y = Stuhlmitte. Der Tisch umschließt die Punkte 45 cm vor jedem Platz (±40 cm seitlich)."""
     if not spots:
         return
-    f = "Graybox/Besprechung"
-    xs = [s["x"] for s in spots]
-    ys = [s["y"] for s in spots]
-    inset = 60.0  # Abstand Person -> Tischkante
+    f = "Graybox/Besprechungsraum"
+    edge = [local(s, 45, side, 0) for s in spots for side in (-40, 40)]
+    xs = [p[0] for p in edge]
+    ys = [p[1] for p in edge]
     cx, cy = (min(xs) + max(xs)) / 2, (min(ys) + max(ys)) / 2
-    length = max(120.0, (max(xs) - min(xs)) - 2 * inset)
-    width = max(90.0, (max(ys) - min(ys)) - 2 * inset)
+    length = max(120.0, max(xs) - min(xs))
+    width = max(90.0, max(ys) - min(ys))
 
     box("Besprechungstisch_Platte", (cx, cy, DESK_H - 2), (length, width, 4), m["walnut"], folder=f)
     for n, dx in enumerate((-length / 4, length / 4), start=1):
-        box("Besprechungstisch_Fuss_{}".format(n), (cx + dx, cy, (DESK_H - 4) / 2), (10, width * 0.5, DESK_H - 4), m["metal"], folder=f)
+        box("Besprechungstisch_Fuss_{}".format(n), (cx + dx, cy, (DESK_H - 4) / 2), (10, width * 0.5, DESK_H - 4), m["steel"], folder=f)
     for spot in spots:
-        build_chair(spot["deskId"] + "_Stuhl", spot, m, f, back_offset=-30.0)
+        build_chair(spot["deskId"] + "_Stuhl", spot, -CHAIR_PUSHED_BACK, m, f)
 
 
 # ---------------------------------------------------------------------------
@@ -264,16 +317,18 @@ def build_meeting(spots, m):
 def build_lighting(m):
     f = "Licht"
 
-    # Sonne: nachmittags, fällt schräg durch die Südfenster
+    # Sonne: später Nachmittag im Oktober, tief aus Westen (leicht Süd), 5200 K
     sun = eas.spawn_actor_from_class(unreal.DirectionalLight, unreal.Vector(0, 0, 800),
-                                     unreal.Rotator(roll=0.0, pitch=-32.0, yaw=62.0))
+                                     unreal.Rotator(roll=0.0, pitch=-20.0, yaw=-12.0))
     sun.set_actor_label("Sonne")
     sun.set_folder_path(f)
     sun.root_component.set_mobility(unreal.ComponentMobility.MOVABLE)
     sun_c = sun.get_component_by_class(unreal.DirectionalLightComponent)
-    set_prop(sun_c, "intensity", 75000.0)            # Lux – echtes Sonnenlicht
+    set_prop(sun_c, "intensity", 40000.0)            # Lux – tief stehende Nachmittagssonne
+    set_prop(sun_c, "use_temperature", True)
+    set_prop(sun_c, "temperature", 5200.0)
     set_prop(sun_c, "atmosphere_sun_light", True)
-    set_prop(sun_c, "light_source_angle", 0.5357)
+    set_prop(sun_c, "light_source_angle", 1.0)
 
     sky = eas.spawn_actor_from_class(unreal.SkyLight, unreal.Vector(0, 0, 900))
     sky.set_actor_label("Himmelslicht")
@@ -289,32 +344,37 @@ def build_lighting(m):
     clouds.set_actor_label("Wolken")
     clouds.set_folder_path(f)
 
+    # Ein Hauch Dunst mit volumetrischem Nebel, damit die Lichtbahnen der Sonne spürbar werden
     fog = eas.spawn_actor_from_class(unreal.ExponentialHeightFog, unreal.Vector(0, 0, -100))
     fog.set_actor_label("Dunst")
     fog.set_folder_path(f)
     fog_c = fog.get_component_by_class(unreal.ExponentialHeightFogComponent)
     if fog_c:
-        set_prop(fog_c, "fog_density", 0.004)
+        set_prop(fog_c, "fog_density", 0.003)
+        set_prop(fog_c, "enable_volumetric_fog", True)
 
-    # Deckenleuchten: 6 Flächenleuchten, zusammen ~500 lx auf den Tischen
-    for ix, x in enumerate((500.0, 1000.0, 1500.0)):
-        for iy, y in enumerate((450.0, 1050.0)):
-            name = "Deckenleuchte_{}_{}".format(ix + 1, iy + 1)
-            box(name + "_Panel", (x, y, ROOM_H - 1.5), (62, 122, 3), m["panel"], folder=f + "/Decke")
-            light = eas.spawn_actor_from_class(unreal.RectLight, unreal.Vector(x, y, ROOM_H - 4),
-                                               unreal.Rotator(roll=0.0, pitch=-90.0, yaw=0.0))
-            light.set_actor_label(name)
-            light.set_folder_path(f + "/Decke")
-            light.root_component.set_mobility(unreal.ComponentMobility.MOVABLE)
-            lc = light.get_component_by_class(unreal.RectLightComponent)
-            set_prop(lc, "intensity_units", enum_value(unreal.LightUnits, "LUMENS"))
-            set_prop(lc, "intensity", 2800.0)
-            set_prop(lc, "source_width", 60.0)
-            set_prop(lc, "source_height", 120.0)
-            set_prop(lc, "use_temperature", True)
-            set_prop(lc, "temperature", 4000.0)
-            set_prop(lc, "attenuation_radius", 1200.0)
-            set_prop(lc, "barn_door_angle", 80.0)
+    # Drei lange Linienleuchten über den Tischinseln, 4000 K, gedimmt
+    for n, y in enumerate((-170.0, 0.0, 170.0), start=1):
+        name = "Linienleuchte_{}".format(n)
+        cx, length = -250.0, 900.0
+        box(name + "_Gehaeuse", (cx, y, ROOM_H - 30), (length, 8, 6), m["steel"], folder=f + "/Decke")
+        box(name + "_Abhaengung_1", (cx - length / 2 + 40, y, ROOM_H - 13), (1, 1, 28), m["steel"], folder=f + "/Decke")
+        box(name + "_Abhaengung_2", (cx + length / 2 - 40, y, ROOM_H - 13), (1, 1, 28), m["steel"], folder=f + "/Decke")
+        light = eas.spawn_actor_from_class(unreal.RectLight, unreal.Vector(cx, y, ROOM_H - 34),
+                                           unreal.Rotator(roll=0.0, pitch=-90.0, yaw=0.0))
+        light.set_actor_label(name)
+        light.set_folder_path(f + "/Decke")
+        light.root_component.set_mobility(unreal.ComponentMobility.MOVABLE)
+        lc = light.get_component_by_class(unreal.RectLightComponent)
+        set_prop(lc, "intensity_units", enum_value(unreal.LightUnits, "LUMENS"))
+        set_prop(lc, "intensity", 2500.0)
+        # Rect Light strahlt entlang seiner X-Achse (nach unten) – Breite/Höhe liegen in der Deckenebene
+        set_prop(lc, "source_width", 6.0)
+        set_prop(lc, "source_height", length - 20.0)
+        set_prop(lc, "use_temperature", True)
+        set_prop(lc, "temperature", 4000.0)
+        set_prop(lc, "attenuation_radius", 1000.0)
+        set_prop(lc, "barn_door_angle", 70.0)
 
 
 def pp(settings, name, value):
@@ -324,19 +384,21 @@ def pp(settings, name, value):
 
 
 def build_post_process():
-    ppv = eas.spawn_actor_from_class(unreal.PostProcessVolume, unreal.Vector(ROOM_W / 2, ROOM_D / 2, ROOM_H / 2))
+    ppv = eas.spawn_actor_from_class(unreal.PostProcessVolume, unreal.Vector(0, 0, ROOM_H / 2))
     ppv.set_actor_label("Belichtung")
     ppv.set_folder_path("Licht")
     set_prop(ppv, "unbound", True)
 
     s = ppv.get_editor_property("settings")
-    # Automatische Belichtung wie eine Kamera, Bereich passend für Innenräume mit Tageslicht (EV100)
+    # Belichtung wie eine Kamera im Innenraum bei Tageslicht. Bewusst enger Bereich und träge,
+    # damit beim Kameraflug nichts springt. Ist das Licht final abgestimmt, min = max setzen
+    # (= feste Belichtung, wie im Designkonzept vorgesehen).
     pp(s, "auto_exposure_method", enum_value(unreal.AutoExposureMethod, "AEM_HISTOGRAM", "HISTOGRAM"))
-    pp(s, "auto_exposure_min_brightness", 6.0)
-    pp(s, "auto_exposure_max_brightness", 13.0)
+    pp(s, "auto_exposure_min_brightness", 8.5)
+    pp(s, "auto_exposure_max_brightness", 10.5)
     pp(s, "auto_exposure_bias", 0.0)
-    pp(s, "auto_exposure_speed_up", 2.0)
-    pp(s, "auto_exposure_speed_down", 1.0)
+    pp(s, "auto_exposure_speed_up", 0.5)
+    pp(s, "auto_exposure_speed_down", 0.5)
     # Zurückhaltende Linseneffekte – nichts, was nach Spiel aussieht
     pp(s, "bloom_intensity", 0.2)
     pp(s, "vignette_intensity", 0.25)
@@ -347,6 +409,24 @@ def build_post_process():
     pp(s, "reflection_method", enum_value(unreal.ReflectionMethod, "LUMEN"))
     pp(s, "lumen_final_gather_quality", 2.0)
     ppv.set_editor_property("settings", s)
+
+
+def build_cameras():
+    # Startpunkt: Südost-Ecke, Blick nach Nordwest über die Tischinseln (wie die Hauptkamera im Konzept)
+    start = eas.spawn_actor_from_class(unreal.PlayerStart, unreal.Vector(700, 470, 100),
+                                       unreal.Rotator(roll=0.0, pitch=0.0, yaw=-150.0))
+    start.set_actor_label("Startpunkt")
+
+    cam = eas.spawn_actor_from_class(unreal.CineCameraActor, unreal.Vector(740, 500, 240),
+                                     unreal.Rotator(roll=0.0, pitch=-17.0, yaw=-150.0))
+    cam.set_actor_label("Kamera_Uebersicht")
+    cam.set_folder_path("Kameras")
+    cam_c = cam.get_cine_camera_component()
+    set_prop(cam_c, "current_focal_length", 24.0)
+    set_prop(cam_c, "current_aperture", 5.6)
+    focus = cam_c.get_editor_property("focus_settings")
+    set_prop(focus, "manual_focus_distance", 900.0)
+    set_prop(cam_c, "focus_settings", focus)
 
 
 # ---------------------------------------------------------------------------
@@ -380,6 +460,7 @@ def main():
     open_or_create_level()
 
     build_room(materials)
+    build_meeting_room_frame(materials)
     for spot in spots:
         kind = spot.get("type", "desk")
         if kind == "desk":
@@ -390,13 +471,11 @@ def main():
 
     build_lighting(materials)
     build_post_process()
+    build_cameras()
 
+    # Regie in der Raummitte = Ursprung der Koordinaten aus DeskLayout.json
     director = eas.spawn_actor_from_class(unreal.OfficeDirector, unreal.Vector(0, 0, 0))
     director.set_actor_label("OfficeDirector")
-
-    start = eas.spawn_actor_from_class(unreal.PlayerStart, unreal.Vector(150, 160, 100),
-                                       unreal.Rotator(roll=0.0, pitch=0.0, yaw=40.0))
-    start.set_actor_label("Startpunkt")
 
     if not les.save_current_level():
         raise RuntimeError("Level konnte nicht gespeichert werden")

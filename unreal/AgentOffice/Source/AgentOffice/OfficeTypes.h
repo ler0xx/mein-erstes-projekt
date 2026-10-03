@@ -62,10 +62,13 @@ struct AGENTOFFICE_API FOfficeWorker
 /**
  * Ein Platz im Grundriss (ein Eintrag aus DeskLayout.json).
  *
- * X/Y = Standort der Person in cm (relativ zum AOfficeDirector),
- * Yaw = Blickrichtung der Person in Grad (0 = +X, 90 = +Y).
- * Bei "desk" steht der Tisch vor der Person, bei "station" die Tafel,
- * bei "meeting" der Besprechungstisch.
+ * Konvention wie im Designkonzept (docs/agent-office-ue5/konzept.md):
+ * Einheit cm, Ursprung = Raummitte auf Bodenhöhe (bzw. der AOfficeDirector),
+ * Yaw = Blickrichtung der Person in Grad (0 = +X, 90 = +Y, 180 = -X, 270 = -Y).
+ * X/Y bedeuten je nach Typ:
+ *   - "desk":    Mitte der Tischplatte; die Person sitzt 75 cm entgegen der Blickrichtung
+ *   - "station": Mitte der Wandtafel; die Person steht ca. 70 cm davor
+ *   - "meeting": Mitte des Stuhls (= Platz der Person)
  */
 USTRUCT(BlueprintType)
 struct AGENTOFFICE_API FOfficeDeskSpot
