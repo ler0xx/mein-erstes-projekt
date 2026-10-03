@@ -30,6 +30,7 @@ python -m http.server 8000
 | `main.js`    | Canvas-Animation (Strömungsfeld, Maus-Interaktion) |
 | `images/blume.svg` | Blumen-Grafik                                 |
 | `leinwand/`  | Ergebnis-Leinwand für alle Agenten-Ergebnisse      |
+| `unreal/`    | Nachbau der Seite als Unreal-Engine-5.8-Projekt (C++) |
 
 ## Blume
 
@@ -88,3 +89,72 @@ Das Office lädt das Bild selbst nach (es speichert es bis zu einer Stunde
 zwischen). Von Hand neu erzeugen: in GitHub unter *Actions → Leinwand-Bild →
 Run workflow* oder lokal mit `node leinwand/bild.mjs`. Aufträge aus dem
 Agent Office kommen nicht ins Bild, weil es öffentlich ist.
+
+## Unreal-Version
+
+Unter `unreal/MeinErstesProjekt/` liegt ein Nachbau der Seite als C++-Projekt
+für **Unreal Engine 5.8**. Es enthält keine `.uasset`-Dateien: Kamera, Hintergrund,
+Partikel, Blume, UI und sogar das Material werden beim Start im Code aufgebaut.
+Als Map dient die leere `Entry`-Map der Engine.
+
+### Was nachgebaut ist
+
+| Website                                   | Unreal                                                                 |
+| ----------------------------------------- | ---------------------------------------------------------------------- |
+| Canvas mit Strömungsfeld (`main.js`)      | `AMEPFlowFieldActor`: bis zu 1400 Partikel als Instanced Static Mesh, folgen einem Perlin-Noise-Feld und weichen der Maus aus |
+| Hintergrund mit radialem Verlauf          | `AMEPBackdropActor`: Fläche plus gestapelte Scheiben als Verlauf        |
+| Titel, Untertitel, „Hallo, Welt“          | `UMEPHeroWidget`: UMG-Widget, komplett in C++ aufgebaut, Titel mit wanderndem Farbverlauf |
+| Blume (`images/blume.svg`)                | `AMEPFlowerActor`: Blume aus Kugeln, Zylindern und Würfeln, wächst beim Start und schwingt |
+| Button „Animation pausieren/abspielen“    | Button im Widget, hält die Partikel an (sie werden dann zu ruhigen Punkten) |
+| Hell/Dunkel (`prefers-color-scheme`)      | Windows-App-Modus, wird laufend nachgeprüft                            |
+| `prefers-reduced-motion`                  | Windows-Einstellung „Animationen in Windows anzeigen“                   |
+
+Zum Ausprobieren lassen sich beide Einstellungen per Kommandozeile festlegen:
+`-Farbschema=hell|dunkel` und `-ReduzierteBewegung=0|1`.
+
+### Voraussetzungen
+
+- Unreal Engine 5.8
+- Visual Studio 2022 mit der Workload „Spieleentwicklung mit C++“
+  (MSVC-Toolchain und Windows 10/11 SDK ab 10.0.19041)
+
+### Bauen
+
+```bat
+"C:\Program Files\Epic Games\UE_5.8\Engine\Build\BatchFiles\Build.bat" MeinErstesProjektEditor Win64 Development -Project="<Pfad>\unreal\MeinErstesProjekt\MeinErstesProjekt.uproject" -WaitMutex
+```
+
+Alternativ: Rechtsklick auf `MeinErstesProjekt.uproject` → „Generate Visual Studio
+project files“, dann die `.sln` in Visual Studio öffnen und bauen.
+
+### Öffnen und starten
+
+- Doppelklick auf `MeinErstesProjekt.uproject` öffnet den Editor (beim ersten Mal
+  wird das Modul gebaut) – dann auf „Play“ klicken.
+- Ohne Editor-Oberfläche direkt als Spiel:
+
+  ```bat
+  "C:\Program Files\Epic Games\UE_5.8\Engine\Binaries\Win64\UnrealEditor.exe" "<Pfad>\MeinErstesProjekt.uproject" -game -windowed -ResX=1280 -ResY=720
+  ```
+
+Beim allerersten Start werden die Shader für das Laufzeit-Material kompiliert; die
+Formen erscheinen dann für einen Moment im grauen Standard-Material.
+
+Hinweis: Das unbeleuchtete Material wird im Code erzeugt, das geht nur mit
+Editor-Daten (Editor, „Play“, `-game`). In einem gepackten Spiel fällt das Projekt
+auf das beleuchtete Grundformen-Material der Engine und ein Frontallicht zurück;
+die Farben weichen dann etwas ab.
+
+### Dateien
+
+| Datei                                   | Inhalt                                             |
+| --------------------------------------- | -------------------------------------------------- |
+| `MeinErstesProjekt.uproject`            | Projektdatei                                        |
+| `Config/DefaultEngine.ini`              | Start-Map, GameMode, Render-Einstellungen           |
+| `Source/MeinErstesProjekt/MEPGameMode.*` | baut die Szene auf                                 |
+| `Source/MeinErstesProjekt/MEPPlayerController.*` | Kamera, Mauszeiger, Widget                 |
+| `Source/MeinErstesProjekt/MEPThemeSubsystem.*` | Farben, Systemeinstellungen, Laufzeit-Material |
+| `Source/MeinErstesProjekt/MEPFlowFieldActor.*` | Strömungsfeld                               |
+| `Source/MeinErstesProjekt/MEPBackdropActor.*` | Hintergrund                                  |
+| `Source/MeinErstesProjekt/MEPFlowerActor.*` | Blume                                          |
+| `Source/MeinErstesProjekt/MEPHeroWidget.*` | Titel, Untertitel, Button                       |

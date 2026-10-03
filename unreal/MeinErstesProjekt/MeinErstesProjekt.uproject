@@ -1,0 +1,17 @@
+{
+	"FileVersion": 3,
+	"EngineAssociation": "5.8",
+	"Category": "",
+	"Description": "Unreal-Nachbau der Landingpage von mein-erstes-projekt: Strömungsfeld, Titel, Blume und Pause-Button.",
+	"Modules": [
+		{
+			"Name": "MeinErstesProjekt",
+			"Type": "Runtime",
+			"LoadingPhase": "Default",
+			"AdditionalDependencies": [
+				"Engine",
+				"UMG"
+			]
+		}
+	]
+}
