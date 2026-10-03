@@ -1,0 +1,16 @@
+[
+  {"deskId": "desk-1", "label": "Schreibtisch 1", "type": "desk", "x": -562, "y": -42, "yaw": 90},
+  {"deskId": "desk-2", "label": "Schreibtisch 2", "type": "desk", "x": -398, "y": -42, "yaw": 90},
+  {"deskId": "desk-3", "label": "Schreibtisch 3", "type": "desk", "x": -102, "y": -42, "yaw": 90},
+  {"deskId": "desk-4", "label": "Schreibtisch 4", "type": "desk", "x": 62, "y": -42, "yaw": 90},
+  {"deskId": "desk-5", "label": "Schreibtisch 5", "type": "desk", "x": -562, "y": 42, "yaw": 270},
+  {"deskId": "desk-6", "label": "Schreibtisch 6", "type": "desk", "x": -398, "y": 42, "yaw": 270},
+  {"deskId": "desk-7", "label": "Schreibtisch 7", "type": "desk", "x": -102, "y": 42, "yaw": 270},
+  {"deskId": "desk-8", "label": "Schreibtisch 8", "type": "desk", "x": 62, "y": 42, "yaw": 270},
+  {"deskId": "station-pulls", "label": "Pull-Request-Brett", "type": "station", "x": -480, "y": -535, "yaw": 270},
+  {"deskId": "station-queue", "label": "Aufgaben-Warteschlange", "type": "station", "x": -20, "y": -535, "yaw": 270},
+  {"deskId": "meeting-1", "label": "Besprechung – Kopfende", "type": "meeting", "x": 705, "y": 0, "yaw": 180},
+  {"deskId": "meeting-2", "label": "Besprechung 2", "type": "meeting", "x": 480, "y": -90, "yaw": 90},
+  {"deskId": "meeting-3", "label": "Besprechung 3", "type": "meeting", "x": 600, "y": -90, "yaw": 90},
+  {"deskId": "meeting-4", "label": "Besprechung 4", "type": "meeting", "x": 540, "y": 90, "yaw": 270}
+]
